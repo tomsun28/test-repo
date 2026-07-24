@@ -49,8 +49,16 @@
   color: #000;
 }
 
-/* Dropdown menu */
-.dropdown-menu {
+.menu-label-bold {
+  font-weight: 600;
+}
+
+.menu-item[data-menu="apple"] .menu-label {
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.menu-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
@@ -62,15 +70,10 @@
   padding: 4px 0;
   min-width: 200px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  display: none;
   z-index: 10002;
 }
 
-.dropdown-menu.visible {
-  display: block;
-}
-
-.dropdown-item {
+.menu-dropdown-item {
   padding: 6px 16px;
   cursor: pointer;
   display: flex;
@@ -79,32 +82,32 @@
   transition: background-color 0.1s;
 }
 
-.dropdown-item:hover {
-  background: rgba(0, 122, 255, 0.9);
-  color: white;
-}
-
-.dropdown-item:hover .shortcut {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.dropdown-item.disabled {
-  color: rgba(0, 0, 0, 0.3);
+.menu-dropdown-item.disabled {
+  color: rgba(0, 0, 0, 0.4);
   cursor: default;
 }
 
-.dropdown-item.disabled:hover {
-  background: transparent;
-  color: rgba(0, 0, 0, 0.3);
+.menu-dropdown-item:hover {
+  background: #0066cc;
+  color: white;
 }
 
-.dropdown-separator {
+.menu-dropdown-item.disabled:hover {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.menu-dropdown-item:hover .menu-shortcut {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.menu-separator {
   height: 1px;
   background: rgba(0, 0, 0, 0.1);
   margin: 4px 0;
 }
 
-.shortcut {
+.menu-shortcut {
   color: rgba(0, 0, 0, 0.5);
   font-size: 12px;
   margin-left: 24px;
@@ -118,6 +121,120 @@
 .status-time {
   cursor: default;
   font-variant-numeric: tabular-nums;
+}
+
+/* Control Center */
+.control-center {
+  position: absolute;
+  top: 100%;
+  right: 8px;
+  margin-top: 4px;
+  width: 280px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  display: none;
+  z-index: 10002;
+}
+
+.control-center.visible {
+  display: block;
+}
+
+.control-center-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.control-center-row:last-child {
+  margin-bottom: 0;
+}
+
+.control-tile {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+  text-align: center;
+}
+
+.control-tile:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.control-tile.active {
+  background: #0066cc;
+  color: white;
+}
+
+.control-tile.active .control-tile-label,
+.control-tile.active .control-tile-value {
+  color: white;
+}
+
+.control-tile-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+
+.control-tile-label {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 2px;
+}
+
+.control-tile-value {
+  font-size: 12px;
+  font-weight: 500;
+  color: #000;
+}
+
+.control-slider {
+  margin-bottom: 16px;
+}
+
+.control-slider:last-child {
+  margin-bottom: 0;
+}
+
+.control-slider-label {
+  font-size: 11px;
+  color: rgba(0, 0, 0, 0.6);
+  margin-bottom: 4px;
+}
+
+.control-slider-input {
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.control-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0066cc;
+  cursor: pointer;
+}
+
+.control-slider-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0066cc;
+  cursor: pointer;
+  border: none;
 }
 
 /* ===== Responsive Menu Bar ===== */
