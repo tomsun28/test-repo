@@ -1,15 +1,17 @@
 // Menu Bar Module
+// Top menu bar with Apple menu, app menus, and status indicators
 
 import './menu-bar.css';
 
 let menuBarElement = null;
 let activeMenu = null;
 let timeInterval = null;
+let isInitialized = false;
 
 // Menu definitions
 const menus = {
   apple: {
-    label: '',
+    label: '',
     items: [
       { label: 'About This Mac', action: 'about' },
       { type: 'separator' },
@@ -47,8 +49,7 @@ const menus = {
       { label: 'Open', action: 'open', shortcut: '⌘O' },
       { label: 'Close Window', action: 'close', shortcut: '⌘W' },
       { type: 'separator' },
-      { label: 'Get Info', action: 'get-info', shortcut: '⌘I' },
-      { label: 'Move to Trash', action: 'delete', shortcut: '⌘⌫' }
+      { label: 'Get Info', action: 'get-info', shortcut: '⌘I' }
     ]
   },
   edit: {
@@ -66,14 +67,12 @@ const menus = {
   view: {
     label: 'View',
     items: [
-      { label: 'as Icons', action: 'view-icons', shortcut: '⌘1' },
-      { label: 'as List', action: 'view-list', shortcut: '⌘2' },
-      { label: 'as Columns', action: 'view-columns', shortcut: '⌘3' },
+      { label: 'as Icons', action: 'view-icons' },
+      { label: 'as List', action: 'view-list' },
+      { label: 'as Columns', action: 'view-columns' },
       { type: 'separator' },
-      { label: 'Show Path Bar', action: 'toggle-path', shortcut: '⌥⌘P' },
-      { label: 'Show Status Bar', action: 'toggle-status', shortcut: '⌘/' },
-      { type: 'separator' },
-      { label: 'Hide Sidebar', action: 'toggle-sidebar', shortcut: '⌥⌘S' }
+      { label: 'Show Path Bar', action: 'show-pathbar' },
+      { label: 'Show Status Bar', action: 'show-statusbar' }
     ]
   },
   window: {
@@ -82,197 +81,218 @@ const menus = {
       { label: 'Minimize', action: 'minimize', shortcut: '⌘M' },
       { label: 'Zoom', action: 'zoom' },
       { type: 'separator' },
-      { label: 'Bring All to Front', action: 'bring-all-front' }
+      { label: 'Bring All to Front', action: 'bring-front' }
     ]
   },
   help: {
     label: 'Help',
     items: [
       { label: 'macOS Help', action: 'macos-help' },
-      { type: 'separator' },
-      { label: 'About This Web App', action: 'about-web' }
+      { label: 'Search', action: 'search-help' }
     ]
   }
 };
 
-export function initMenuBar() {
-  menuBarElement = document.createElement('div');
-  menuBarElement.className = 'menu-bar';
-  menuBarElement.id = 'menu-bar';
-
-  // Left side - menus
-  const leftSide = document.createElement('div');
-  leftSide.className = 'menu-bar-left';
-
-  // Create menu items
-  Object.keys(menus).forEach(menuKey => {
-    const menuData = menus[menuKey];
-    const menuItem = createMenuItem(menuKey, menuData);
-    leftSide.appendChild(menuItem);
-  });
-
-  // Right side - status bar
-  const rightSide = document.createElement('div');
-  rightSide.className = 'menu-bar-right';
-
-  // WiFi indicator
-  const wifiIcon = document.createElement('span');
-  wifiIcon.className = 'status-icon';
-  wifiIcon.textContent = '📶';
-  wifiIcon.title = 'Wi-Fi: Connected';
-  rightSide.appendChild(wifiIcon);
-
-  // Battery indicator
-  const batteryIcon = document.createElement('span');
-  batteryIcon.className = 'status-icon';
-  batteryIcon.textContent = '🔋';
-  batteryIcon.title = 'Battery: 100%';
-  rightSide.appendChild(batteryIcon);
-
-  // Time
-  const timeElement = document.createElement('span');
-  timeElement.className = 'status-time';
-  rightSide.appendChild(timeElement);
-  updateTime(timeElement);
-  timeInterval = setInterval(() => updateTime(timeElement), 1000);
-
-  menuBarElement.appendChild(leftSide);
-  menuBarElement.appendChild(rightSide);
-
-  document.body.appendChild(menuBarElement);
-
-  // Close menus when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.menu-item') && !e.target.closest('.menu-dropdown')) {
-      closeAllMenus();
-    }
-  });
-}
-
-function createMenuItem(menuKey, menuData) {
+// Create menu item element
+function createMenuItem(menuId, menuData) {
   const menuItem = document.createElement('div');
   menuItem.className = 'menu-item';
-  menuItem.dataset.menu = menuKey;
+  menuItem.dataset.menu = menuId;
 
   const label = document.createElement('span');
   label.className = 'menu-label';
   label.textContent = menuData.label;
   menuItem.appendChild(label);
 
-  // Create dropdown
-  const dropdown = document.createElement('div');
-  dropdown.className = 'menu-dropdown';
-  dropdown.style.display = 'none';
-
-  menuData.items.forEach(item => {
-    if (item.type === 'separator') {
-      const separator = document.createElement('div');
-      separator.className = 'menu-separator';
-      dropdown.appendChild(separator);
-    } else {
-      const menuItem = document.createElement('div');
-      menuItem.className = 'menu-dropdown-item';
-      
-      const itemLabel = document.createElement('span');
-      itemLabel.textContent = item.label;
-      menuItem.appendChild(itemLabel);
-
-      if (item.shortcut) {
-        const shortcut = document.createElement('span');
-        shortcut.className = 'menu-shortcut';
-        shortcut.textContent = item.shortcut;
-        menuItem.appendChild(shortcut);
-      }
-
-      if (item.submenu) {
-        menuItem.classList.add('has-submenu');
-        const arrow = document.createElement('span');
-        arrow.className = 'submenu-arrow';
-        arrow.textContent = '▶';
-        menuItem.appendChild(arrow);
-      }
-
-      menuItem.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (item.action) {
-          handleMenuAction(menuKey, item.action);
-          closeAllMenus();
-        }
-      });
-
-      dropdown.appendChild(menuItem);
-    }
-  });
-
+  const dropdown = createDropdown(menuData.items);
   menuItem.appendChild(dropdown);
 
-  // Click to toggle menu
   menuItem.addEventListener('click', (e) => {
     e.stopPropagation();
     toggleMenu(menuItem, dropdown);
   });
 
-  // Hover to switch menus when one is open
-  menuItem.addEventListener('mouseenter', () => {
-    if (activeMenu && activeMenu !== menuItem) {
-      closeAllMenus();
-      toggleMenu(menuItem, dropdown);
-    }
-  });
-
   return menuItem;
 }
 
+// Create dropdown menu
+function createDropdown(items) {
+  const dropdown = document.createElement('div');
+  dropdown.className = 'dropdown-menu';
+
+  items.forEach(item => {
+    if (item.type === 'separator') {
+      const separator = document.createElement('div');
+      separator.className = 'dropdown-separator';
+      dropdown.appendChild(separator);
+    } else {
+      const menuItem = document.createElement('div');
+      menuItem.className = 'dropdown-item';
+      if (item.disabled) menuItem.classList.add('disabled');
+
+      const labelSpan = document.createElement('span');
+      labelSpan.textContent = item.label;
+      menuItem.appendChild(labelSpan);
+
+      if (item.shortcut) {
+        const shortcutSpan = document.createElement('span');
+        shortcutSpan.className = 'shortcut';
+        shortcutSpan.textContent = item.shortcut;
+        menuItem.appendChild(shortcutSpan);
+      }
+
+      if (!item.disabled) {
+        menuItem.addEventListener('click', (e) => {
+          e.stopPropagation();
+          handleMenuAction(item.action);
+          closeAllMenus();
+        });
+      }
+
+      dropdown.appendChild(menuItem);
+    }
+  });
+
+  return dropdown;
+}
+
+// Toggle menu open/close
 function toggleMenu(menuItem, dropdown) {
-  const isOpen = dropdown.style.display === 'block';
+  const isOpen = menuItem.classList.contains('active');
   
   closeAllMenus();
   
   if (!isOpen) {
-    dropdown.style.display = 'block';
     menuItem.classList.add('active');
+    dropdown.classList.add('visible');
     activeMenu = menuItem;
   }
 }
 
+// Close all open menus
 function closeAllMenus() {
-  document.querySelectorAll('.menu-dropdown').forEach(dropdown => {
-    dropdown.style.display = 'none';
-  });
-  document.querySelectorAll('.menu-item').forEach(item => {
+  if (activeMenu) {
+    activeMenu.classList.remove('active');
+    const dropdown = activeMenu.querySelector('.dropdown-menu');
+    if (dropdown) dropdown.classList.remove('visible');
+    activeMenu = null;
+  }
+  
+  document.querySelectorAll('.menu-item.active').forEach(item => {
     item.classList.remove('active');
   });
-  activeMenu = null;
-}
-
-function updateTime(timeElement) {
-  const now = new Date();
-  const hours = now.getHours();
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const ampm = hours >= 12 ? 'PM' : 'AM';
-  const displayHours = hours % 12 || 12;
   
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const day = days[now.getDay()];
-  
-  timeElement.textContent = `${day} ${displayHours}:${minutes} ${ampm}`;
-}
-
-function handleMenuAction(menu, action) {
-  console.log(`Menu action: ${menu} -> ${action}`);
-  
-  // Dispatch custom event for other modules to handle
-  const event = new CustomEvent('menu-action', {
-    detail: { menu, action }
+  document.querySelectorAll('.dropdown-menu.visible').forEach(dropdown => {
+    dropdown.classList.remove('visible');
   });
-  document.dispatchEvent(event);
 }
 
-export function destroyMenuBar() {
+// Handle menu action
+function handleMenuAction(action) {
+  console.log(`Menu action: ${action}`);
+  
+  switch (action) {
+    case 'about':
+      alert('About This Mac\nmacOS Web Edition\nVersion 1.0.0');
+      break;
+    case 'preferences':
+      alert('System Preferences\nComing soon...');
+      break;
+    case 'forcequit':
+      alert('Force Quit Applications\nNo applications to quit.');
+      break;
+  }
+}
+
+// Update time display
+function updateTime() {
+  const timeElement = document.querySelector('.status-time');
+  if (!timeElement) return;
+  
+  const now = new Date();
+  const day = now.toLocaleDateString('en-US', { weekday: 'short' });
+  const month = now.toLocaleDateString('en-US', { month: 'short' });
+  const date = now.getDate();
+  const time = now.toLocaleTimeString('en-US', { 
+    hour: 'numeric', 
+    minute: '2-digit',
+    hour12: true 
+  });
+  
+  timeElement.textContent = `${day} ${month} ${date} ${time}`;
+}
+
+// Initialize menu bar
+export function initMenuBar() {
+  // Prevent duplicate initialization
+  if (isInitialized) {
+    console.warn('Menu bar already initialized');
+    return;
+  }
+  isInitialized = true;
+  
+  // Clean up any existing interval
   if (timeInterval) {
     clearInterval(timeInterval);
+    timeInterval = null;
   }
-  if (menuBarElement) {
-    menuBarElement.remove();
-  }
+  
+  menuBarElement = document.createElement('div');
+  menuBarElement.className = 'menu-bar';
+
+  // Left section: menus
+  const leftSection = document.createElement('div');
+  leftSection.className = 'menu-bar-left';
+
+  // Add all menus
+  Object.keys(menus).forEach(menuId => {
+    const menuItem = createMenuItem(menuId, menus[menuId]);
+    leftSection.appendChild(menuItem);
+  });
+
+  menuBarElement.appendChild(leftSection);
+
+  // Right section: status indicators
+  const rightSection = document.createElement('div');
+  rightSection.className = 'menu-bar-right';
+
+  // Battery
+  const battery = document.createElement('span');
+  battery.className = 'status-icon';
+  battery.textContent = '🔋 100%';
+  rightSection.appendChild(battery);
+
+  // WiFi
+  const wifi = document.createElement('span');
+  wifi.className = 'status-icon';
+  wifi.textContent = '📶';
+  rightSection.appendChild(wifi);
+
+  // Time
+  const time = document.createElement('span');
+  time.className = 'status-time';
+  rightSection.appendChild(time);
+
+  menuBarElement.appendChild(rightSection);
+
+  // Insert at top of body
+  document.body.insertBefore(menuBarElement, document.body.firstChild);
+
+  // Start time updates
+  updateTime();
+  timeInterval = setInterval(updateTime, 1000);
+
+  // Close menus when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.menu-bar')) {
+      closeAllMenus();
+    }
+  });
+
+  // Close menus on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAllMenus();
+    }
+  });
 }
