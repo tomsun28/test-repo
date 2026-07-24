@@ -204,21 +204,30 @@ function showDockItemContextMenu(e, app) {
   const menu = document.createElement('div');
   menu.className = 'dock-context-menu';
 
-  const openLabel = isRunning ? 'Show' : 'Open';
-  const quitOption = isRunning ? `
-    <div class="dock-context-menu-item" data-action="quit">Quit</div>
-    <div class="dock-context-menu-separator"></div>
-  ` : '';
+  // Build menu items via DOM APIs (no innerHTML) to avoid XSS
+  const mkItem = (action, label) => {
+    const el = document.createElement('div');
+    el.className = 'dock-context-menu-item';
+    el.dataset.action = action;
+    el.textContent = label;
+    return el;
+  };
+  const mkSep = () => {
+    const el = document.createElement('div');
+    el.className = 'dock-context-menu-separator';
+    return el;
+  };
 
-  menu.innerHTML = `
-    <div class="dock-context-menu-item" data-action="open">${openLabel}</div>
-    ${quitOption}
-    <div class="dock-context-menu-item" data-action="options">Options</div>
-    <div class="dock-context-menu-separator"></div>
-    <div class="dock-context-menu-item" data-action="show-in-finder">Show in Finder</div>
-    <div class="dock-context-menu-separator"></div>
-    <div class="dock-context-menu-item" data-action="remove">Remove from Dock</div>
-  `;
+  menu.appendChild(mkItem('open', isRunning ? 'Show' : 'Open'));
+  if (isRunning) {
+    menu.appendChild(mkItem('quit', 'Quit'));
+    menu.appendChild(mkSep());
+  }
+  menu.appendChild(mkItem('options', 'Options'));
+  menu.appendChild(mkSep());
+  menu.appendChild(mkItem('show-in-finder', 'Show in Finder'));
+  menu.appendChild(mkSep());
+  menu.appendChild(mkItem('remove', 'Remove from Dock'));
 
   // Position menu
   const x = e.clientX;
