@@ -1,0 +1,97 @@
+/* Calculator App Styles */
+
+.calculator {
+  width: 100%;
+  height: 100%;
+  background: #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  user-select: none;
+}
+
+.calculator-display {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 20px 24px 12px;
+  color: white;
+  font-size: 64px;
+  font-weight: 200;
+  overflow: hidden;
+  min-height: 90px;
+  word-break: break-all;
+  text-align: right;
+  line-height: 1;
+}
+
+.calculator-display.shrink-1 { font-size: 52px; }
+.calculator-display.shrink-2 { font-size: 42px; }
+.calculator-display.shrink-3 { font-size: 32px; }
+
+.calculator-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  padding: 1px;
+  background: #1c1c1c;
+}
+
+.calc-btn {
+  background: #333;
+  color: white;
+  border: none;
+  padding: 18px 0;
+  font-size: 22px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: background-color 0.1s;
+  font-family: inherit;
+}
+
+.calc-btn:hover {
+  background: #4a4a4a;
+}
+
+.calc-btn:active {
+  background: #5a5a5a;
+}
+
+.calc-btn.function {
+  background: #a5a5a5;
+  color: black;
+}
+
+.calc-btn.function:hover {
+  background: #bcbcbc;
+}
+
+.calc-btn.function:active {
+  background: #d4d4d4;
+}
+
+.calc-btn.operator {
+  background: #ff9f0a;
+  color: white;
+  font-size: 26px;
+}
+
+.calc-btn.operator:hover {
+  background: #ffb340;
+}
+
+.calc-btn.operator:active {
+  background: #ffc566;
+}
+
+.calc-btn.operator.active {
+  background: white;
+  color: #ff9f0a;
+}
+
+.calc-btn.zero {
+  grid-column: span 2;
+  text-align: left;
+  padding-left: 28px;
+}

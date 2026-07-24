@@ -3,9 +3,15 @@
 
 import './dock.css';
 import { createWindow } from './window-manager.js';
+import { createCalculator } from './apps/calculator.js';
+import { createTextEditor } from './apps/text-editor.js';
+import { createSettings } from './apps/settings.js';
 
 const DEFAULT_APPS = [
   { id: 'finder', name: 'Finder', icon: '📁' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮' },
+  { id: 'text-editor', name: 'Text Editor', icon: '📝' },
+  { id: 'settings', name: 'System Settings', icon: '⚙️' },
   { id: 'safari', name: 'Safari', icon: '🧭' },
   { id: 'mail', name: 'Mail', icon: '📧' },
   { id: 'maps', name: 'Maps', icon: '🗺️' },
@@ -14,7 +20,6 @@ const DEFAULT_APPS = [
   { id: 'calendar', name: 'Calendar', icon: '📅' },
   { id: 'notes', name: 'Notes', icon: '📝' },
   { id: 'music', name: 'Music', icon: '🎵' },
-  { id: 'settings', name: 'System Settings', icon: '⚙️' },
 ];
 
 let dockElement = null;
@@ -86,11 +91,51 @@ function createDockItem(app) {
 }
 
 /**
+ * Open an app by id - uses dedicated app content for known apps.
+ */
+function openApp(app) {
+  let content;
+  switch (app.id) {
+    case 'calculator':
+      content = createCalculator();
+      break;
+    case 'text-editor':
+      content = createTextEditor();
+      break;
+    case 'settings':
+      content = createSettings();
+      break;
+    default:
+      content = createPlaceholderContent(app);
+  }
+
+  const opts = {
+    title: app.name,
+    content,
+  };
+
+  // App-specific window options
+  if (app.id === 'calculator') {
+    opts.width = 320;
+    opts.height = 480;
+    opts.minWidth = 280;
+    opts.minHeight = 420;
+  } else if (app.id === 'settings') {
+    opts.width = 780;
+    opts.height = 520;
+    opts.minWidth = 600;
+    opts.minHeight = 400;
+  }
+
+  createWindow(opts);
+}
+
+/**
  * Handle dock item click
  */
 function handleDockItemClick(app) {
   console.log(`Opening app: ${app.name}`);
-  
+
   // Bounce animation
   const item = dockItems.get(app.id);
   if (item) {
@@ -100,11 +145,27 @@ function handleDockItemClick(app) {
     }, 500);
   }
 
-  // Create window for the app
-  createWindow({
-    title: app.name,
-    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`,
-  });
+  openApp(app);
+}
+
+/**
+ * Create placeholder content for apps that don't have a dedicated implementation.
+ */
+function createPlaceholderContent(app) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+
+  const icon = document.createElement('div');
+  icon.style.fontSize = '64px';
+  icon.textContent = app.icon;
+  wrap.appendChild(icon);
+
+  const name = document.createElement('div');
+  name.style.cssText = 'font-size:16px;color:#666;';
+  name.textContent = app.name;
+  wrap.appendChild(name);
+
+  return wrap;
 }
 
 /**
