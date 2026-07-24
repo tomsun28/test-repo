@@ -1,0 +1,281 @@
+/* Finder Application Styles */
+
+.finder-container {
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* Sidebar */
+.finder-sidebar {
+  width: 180px;
+  background: #f2f2f7;
+  border-right: 1px solid #d1d1d6;
+  padding: 12px 0;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.finder-sidebar-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #333;
+  transition: background-color 0.15s;
+  user-select: none;
+}
+
+.finder-sidebar-item:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.finder-sidebar-item.active {
+  background-color: rgba(0, 122, 255, 0.15);
+  color: #007aff;
+  font-weight: 500;
+}
+
+.sidebar-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.sidebar-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Main content */
+.finder-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Toolbar */
+.finder-toolbar {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #d1d1d6;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.finder-nav-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.finder-nav-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #c7c7cc;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #333;
+  transition: all 0.15s;
+}
+
+.finder-nav-btn:hover:not(:disabled) {
+  background-color: #e5e5ea;
+}
+
+.finder-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.finder-path {
+  flex: 1;
+  text-align: center;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.finder-view-toggle {
+  display: flex;
+  gap: 2px;
+}
+
+.finder-view-btn {
+  width: 32px;
+  height: 28px;
+  border: 1px solid #c7c7cc;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #666;
+  transition: all 0.15s;
+}
+
+.finder-view-btn:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.finder-view-btn:last-child {
+  border-radius: 0 6px 6px 0;
+  border-left: none;
+}
+
+.finder-view-btn.active {
+  background-color: #007aff;
+  border-color: #007aff;
+  color: #fff;
+}
+
+.finder-view-btn:hover:not(.active) {
+  background-color: #e5e5ea;
+}
+
+/* Content area */
+.finder-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Empty state */
+.finder-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Grid view */
+.finder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 12px;
+}
+
+.finder-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s;
+}
+
+.finder-grid-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.finder-grid-item.selected {
+  background-color: rgba(0, 122, 255, 0.12);
+}
+
+.finder-grid-item .finder-item-icon {
+  font-size: 42px;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+
+.finder-grid-item .finder-item-name {
+  font-size: 12px;
+  color: #333;
+  text-align: center;
+  word-break: break-word;
+  line-height: 1.3;
+  max-height: 2.6em;
+  overflow: hidden;
+}
+
+/* List view */
+.finder-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.finder-list-header {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #f8f8f8;
+  border-bottom: 1px solid #d1d1d6;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.finder-list-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.finder-list-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.finder-list-item.selected {
+  background-color: rgba(0, 122, 255, 0.1);
+}
+
+.finder-list-col.name {
+  flex: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.finder-list-col.modified {
+  flex: 1.5;
+  font-size: 12px;
+  color: #666;
+  padding-right: 12px;
+}
+
+.finder-list-col.size {
+  flex: 1;
+  font-size: 12px;
+  color: #666;
+  text-align: right;
+}
+
+.finder-list-item .finder-item-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.finder-list-item .finder-item-name {
+  font-size: 13px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
