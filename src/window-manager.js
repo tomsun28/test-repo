@@ -13,7 +13,7 @@ let focusedWindowId = null;
 const DEFAULTS = {
   title: 'Untitled',
   x: 100,
-  y: 80,
+  y: 105,
   width: 600,
   height: 400,
   minWidth: 300,
@@ -340,7 +340,7 @@ function setupDrag(win, titlebar) {
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     const newX = origX + dx;
-    const newY = Math.max(0, origY + dy); // don't go above screen top
+    const newY = Math.max(25, origY + dy); // don't go above menu bar (25px)
     applyGeometry(win, newX, newY, win.width, win.height);
   });
 
