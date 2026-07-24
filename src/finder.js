@@ -197,7 +197,7 @@ const sidebarLocations = [
 /**
  * Open Finder application
  */
-export function openFinder(initialPath = '/') {
+export function openFinder(initialPath = '/', options = {}) {
   const container = document.createElement('div');
   container.className = 'finder-container';
 
@@ -243,6 +243,7 @@ export function openFinder(initialPath = '/') {
     height: 480,
     minWidth: 500,
     minHeight: 350,
+    onClose: options.onClose,
   });
 
   return win;

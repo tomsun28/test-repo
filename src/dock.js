@@ -100,18 +100,16 @@ function openApp(app) {
   switch (app.id) {
     case 'finder': {
       const item = dockItems.get(app.id);
-      const windowHandle = openFinder();
+      const windowHandle = openFinder('/', {
+        onClose: () => {
+          runningApps.delete(app.id);
+          if (item) item.classList.remove('running');
+        },
+      });
       runningApps.set(app.id, windowHandle);
       if (item) {
         item.classList.add('running');
       }
-      // Cleanup tracking when window closes
-      const originalOnClose = windowHandle.onClose;
-      windowHandle.onClose = () => {
-        runningApps.delete(app.id);
-        if (item) item.classList.remove('running');
-        if (originalOnClose) originalOnClose();
-      };
       return;
     }
     case 'calculator':
