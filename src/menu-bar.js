@@ -12,6 +12,10 @@ let clockInterval = null;
  * @param {HTMLElement} container - The desktop container to append the menu bar to.
  */
 export function initMenuBar(container) {
+  // Prevent re-initialization (avoids stacking clock intervals and duplicate DOM)
+  if (menuBarElement) {
+    return;
+  }
   menuBarElement = document.createElement('div');
   menuBarElement.className = 'menu-bar';
 
@@ -295,6 +299,18 @@ function updateClock() {
   };
 
   clockEl.textContent = now.toLocaleString('en-US', options);
+}
+
+/**
+ * Set the active app name displayed in the menu bar.
+ * @param {string} appName - The name of the active application.
+ */
+export function setActiveApp(appName) {
+  if (!menuBarElement) return;
+  const finderLabel = menuBarElement.querySelector('[data-menu-id="finder-menu"] .menu-bar-label');
+  if (finderLabel) {
+    finderLabel.textContent = appName;
+  }
 }
 
 /**

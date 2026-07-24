@@ -146,12 +146,3 @@
 .clock:hover {
   background-color: rgba(0, 0, 0, 0.08);
 }
-
-/* Adjust desktop to account for menu bar */
-#desktop {
-  padding-top: 45px !important;
-}
-
-.desktop-icons {
-  top: 45px !important;
-}

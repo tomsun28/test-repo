@@ -3,7 +3,7 @@
 import './style.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
-import { initMenuBar } from './menu-bar.js';
+import { initMenuBar, setActiveApp } from './menu-bar.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -205,6 +205,9 @@ function hideContextMenu(menu) {
 // Handle dock app clicks
 function handleDockAppClick(appId, appData) {
   console.log(`Dock app clicked: ${appData.name}`);
+  
+  // Update active app in menu bar
+  setActiveApp(appData.name);
   
   // Create a window for the app
   createWindow({
