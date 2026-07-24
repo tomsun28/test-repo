@@ -167,3 +167,79 @@
   height: 12px;
   cursor: nesw-resize;
 }
+
+/* ===== Responsive Window Manager ===== */
+
+@media (max-width: 768px) {
+  .window {
+    border-radius: 8px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .window-titlebar {
+    height: 36px;
+    padding: 0 10px;
+  }
+
+  .traffic-light {
+    width: 11px;
+    height: 11px;
+  }
+
+  .traffic-lights {
+    gap: 7px;
+    margin-right: 10px;
+  }
+
+  .window-title {
+    font-size: 12px;
+  }
+
+  .window-content {
+    padding: 12px;
+  }
+
+  /* Larger touch targets for resize handles on mobile */
+  .resize-handle.resize-n,
+  .resize-handle.resize-s {
+    height: 12px;
+  }
+
+  .resize-handle.resize-e,
+  .resize-handle.resize-w {
+    width: 12px;
+  }
+
+  .resize-handle.resize-ne,
+  .resize-handle.resize-nw,
+  .resize-handle.resize-se,
+  .resize-handle.resize-sw {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .window-titlebar {
+    height: 34px;
+    padding: 0 8px;
+  }
+
+  .traffic-light {
+    width: 10px;
+    height: 10px;
+  }
+
+  .traffic-lights {
+    gap: 6px;
+    margin-right: 8px;
+  }
+
+  .window-title {
+    font-size: 11px;
+  }
+
+  .window-content {
+    padding: 10px;
+  }
+}
