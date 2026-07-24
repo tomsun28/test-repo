@@ -289,28 +289,39 @@ export function addDockItem(app) {
  */
 function setupDockMagnification() {
   const items = dockElement.querySelectorAll('.dock-item');
-  
-  dockElement.addEventListener('mousemove', (e) => {
+
+  const magnify = (clientX) => {
     items.forEach(item => {
       const rect = item.getBoundingClientRect();
       const itemCenter = rect.left + rect.width / 2;
-      const distance = Math.abs(e.clientX - itemCenter);
+      const distance = Math.abs(clientX - itemCenter);
       const maxDistance = 150;
       
       if (distance < maxDistance) {
-        const scale = 1 + (1 - distance / maxDistance) * 0.5; // Max 1.5x scale
+        const scale = 1 + (1 - distance / maxDistance) * 0.5;
         item.style.transform = `scale(${scale})`;
       } else {
         item.style.transform = 'scale(1)';
       }
     });
-  });
+  };
 
-  dockElement.addEventListener('mouseleave', () => {
+  const resetScale = () => {
     items.forEach(item => {
       item.style.transform = 'scale(1)';
     });
-  });
+  };
+
+  dockElement.addEventListener('mousemove', (e) => magnify(e.clientX));
+  dockElement.addEventListener('mouseleave', resetScale);
+
+  dockElement.addEventListener('touchmove', (e) => {
+    if (e.touches.length > 0) {
+      magnify(e.touches[0].clientX);
+    }
+  }, { passive: true });
+  dockElement.addEventListener('touchend', resetScale);
+  dockElement.addEventListener('touchcancel', resetScale);
 }
 
 /**

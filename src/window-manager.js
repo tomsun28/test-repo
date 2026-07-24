@@ -31,10 +31,24 @@ export function createWindow(options = {}) {
   const opts = { ...DEFAULTS, ...options };
   const id = `window-${++windowIdCounter}`;
 
-  // Stagger new windows
+  // Stagger new windows, but clamp on small screens
   const offset = (windowIdCounter % 8) * 30;
-  opts.x += offset;
-  opts.y += offset;
+  const isSmall = window.innerWidth <= 768;
+  const stagger = isSmall ? Math.min(offset, 40) : offset;
+  opts.x += stagger;
+  opts.y += stagger;
+
+  // On small screens, clamp window to viewport so it stays visible
+  if (isSmall) {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const maxW = Math.min(opts.width, vw - 10);
+    const maxH = Math.min(opts.height, vh - 90); // leave room for dock + menu bar
+    opts.width = Math.max(opts.minWidth, maxW);
+    opts.height = Math.max(opts.minHeight, maxH);
+    opts.x = Math.min(opts.x, Math.max(5, vw - opts.width - 5));
+    opts.y = Math.min(opts.y, Math.max(30, vh - opts.height - 90));
+  }
 
   const win = {
     id,
@@ -282,6 +296,13 @@ function buildWindowDOM(win, content) {
     }
   });
 
+  // Event: focus on touch
+  el.addEventListener('touchstart', (e) => {
+    if (!e.target.closest('.resize-handle')) {
+      focusWindow(win.id);
+    }
+  }, { passive: true });
+
   // Drag behavior on titlebar
   setupDrag(win, titlebar);
 
@@ -328,44 +349,68 @@ function applyGeometry(win, x, y, width, height) {
 
 // ---- Drag Behavior ----
 
+// Helper to extract clientX/clientY from both mouse and touch events.
+function getPointerCoords(e) {
+  if (e.touches && e.touches.length > 0) {
+    return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+  }
+  if (e.changedTouches && e.changedTouches.length > 0) {
+    return { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY };
+  }
+  return { clientX: e.clientX, clientY: e.clientY };
+}
+
 function setupDrag(win, titlebar) {
   let dragging = false;
   let startX, startY, origX, origY;
 
-  titlebar.addEventListener('mousedown', (e) => {
+  const onStart = (e) => {
     // Don't drag if clicking traffic lights or if maximized
     if (e.target.closest('.traffic-lights')) return;
     if (win.state === 'maximized') return;
 
     dragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
+    const coords = getPointerCoords(e);
+    startX = coords.clientX;
+    startY = coords.clientY;
     origX = win.x;
     origY = win.y;
-    e.preventDefault();
-  });
+    if (e.cancelable) e.preventDefault();
+  };
 
-  const onMouseMove = (e) => {
+  const onMove = (e) => {
     if (!dragging) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+    const coords = getPointerCoords(e);
+    const dx = coords.clientX - startX;
+    const dy = coords.clientY - startY;
     const newX = origX + dx;
     const newY = Math.max(0, origY + dy); // don't go above screen top
     applyGeometry(win, newX, newY, win.width, win.height);
+    if (e.cancelable) e.preventDefault();
   };
 
-  const onMouseUp = () => {
+  const onEnd = () => {
     dragging = false;
   };
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  titlebar.addEventListener('mousedown', onStart);
+  titlebar.addEventListener('touchstart', onStart, { passive: false });
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+  document.addEventListener('touchcancel', onEnd);
 
   // Store references for cleanup
   if (!win._listeners) win._listeners = [];
   win._listeners.push(
-    { target: document, type: 'mousemove', handler: onMouseMove },
-    { target: document, type: 'mouseup', handler: onMouseUp },
+    { target: document, type: 'mousemove', handler: onMove },
+    { target: document, type: 'mouseup', handler: onEnd },
+    { target: document, type: 'touchmove', handler: onMove },
+    { target: document, type: 'touchend', handler: onEnd },
+    { target: document, type: 'touchcancel', handler: onEnd },
   );
 }
 
@@ -375,23 +420,25 @@ function setupResize(win, handle, direction) {
   let resizing = false;
   let startX, startY, origX, origY, origW, origH;
 
-  handle.addEventListener('mousedown', (e) => {
+  const onStart = (e) => {
     if (win.state === 'maximized') return;
     resizing = true;
-    startX = e.clientX;
-    startY = e.clientY;
+    const coords = getPointerCoords(e);
+    startX = coords.clientX;
+    startY = coords.clientY;
     origX = win.x;
     origY = win.y;
     origW = win.width;
     origH = win.height;
-    e.preventDefault();
+    if (e.cancelable) e.preventDefault();
     e.stopPropagation();
-  });
+  };
 
-  const onMouseMove = (e) => {
+  const onMove = (e) => {
     if (!resizing) return;
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+    const coords = getPointerCoords(e);
+    const dx = coords.clientX - startX;
+    const dy = coords.clientY - startY;
 
     let newX = origX;
     let newY = origY;
@@ -429,19 +476,30 @@ function setupResize(win, handle, direction) {
     }
 
     applyGeometry(win, newX, newY, newW, newH);
+    if (e.cancelable) e.preventDefault();
   };
 
-  const onMouseUp = () => {
+  const onEnd = () => {
     resizing = false;
   };
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+  handle.addEventListener('mousedown', onStart);
+  handle.addEventListener('touchstart', onStart, { passive: false });
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, { passive: false });
+
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+  document.addEventListener('touchcancel', onEnd);
 
   // Store references for cleanup
   if (!win._listeners) win._listeners = [];
   win._listeners.push(
-    { target: document, type: 'mousemove', handler: onMouseMove },
-    { target: document, type: 'mouseup', handler: onMouseUp },
+    { target: document, type: 'mousemove', handler: onMove },
+    { target: document, type: 'mouseup', handler: onEnd },
+    { target: document, type: 'touchmove', handler: onMove },
+    { target: document, type: 'touchend', handler: onEnd },
+    { target: document, type: 'touchcancel', handler: onEnd },
   );
 }

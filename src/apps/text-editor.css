@@ -65,3 +65,50 @@
   justify-content: space-between;
   flex-shrink: 0;
 }
+
+/* ===== Responsive Text Editor ===== */
+
+@media (max-width: 768px) {
+  .text-editor-toolbar {
+    padding: 6px 10px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .text-editor-toolbar button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .text-editor-textarea {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .text-editor-status {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-editor-toolbar {
+    padding: 5px 8px;
+    gap: 6px;
+  }
+
+  .text-editor-toolbar button {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .text-editor-textarea {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .text-editor-status {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}

@@ -121,3 +121,55 @@
   font-weight: 500;
   cursor: default;
 }
+
+/* ===== Responsive Menu Bar ===== */
+
+@media (max-width: 768px) {
+  .menu-bar {
+    font-size: 12px;
+    padding: 0 6px;
+  }
+
+  .menu-item {
+    padding: 2px 8px;
+  }
+
+  .menu-bar-right {
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .menu-dropdown {
+    min-width: 200px;
+  }
+
+  .menu-dropdown-item {
+    padding: 6px 14px;
+    font-size: 13px;
+  }
+
+  .menu-shortcut {
+    font-size: 11px;
+    margin-left: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-bar {
+    font-size: 11px;
+    height: 24px;
+  }
+
+  .menu-item {
+    padding: 2px 6px;
+  }
+
+  .menu-bar-right {
+    gap: 6px;
+    font-size: 10px;
+  }
+
+  .menu-dropdown {
+    min-width: 180px;
+  }
+}

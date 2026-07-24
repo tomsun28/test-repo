@@ -145,3 +145,65 @@
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.6);
 }
+
+/* ===== Responsive Dock ===== */
+
+@media (max-width: 768px) {
+  .dock {
+    bottom: 6px;
+    padding: 6px 10px;
+    height: 60px;
+    gap: 3px;
+  }
+
+  .dock-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 30px;
+    border-radius: 10px;
+  }
+
+  .dock-separator {
+    height: 40px;
+    margin: 0 6px;
+  }
+
+  .dock-tooltip {
+    font-size: 11px;
+    padding: 5px 10px;
+  }
+
+  .dock-context-menu {
+    min-width: 160px;
+  }
+
+  .dock-context-menu-item {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dock {
+    bottom: 4px;
+    padding: 5px 8px;
+    height: 52px;
+    gap: 2px;
+  }
+
+  .dock-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 26px;
+    border-radius: 8px;
+  }
+
+  .dock-separator {
+    height: 36px;
+    margin: 0 4px;
+  }
+
+  .dock-tooltip {
+    display: none;
+  }
+}
