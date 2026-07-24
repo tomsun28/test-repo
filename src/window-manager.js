@@ -88,16 +88,15 @@ export function focusWindow(id) {
 
 /**
  * Minimize a window.
- * Note: Currently keeps window visible but marked as minimized.
- * A proper restore mechanism (dock/taskbar integration) should be implemented
- * before hiding minimized windows.
+ * Window remains visible (scaled down) and can be clicked to restore.
+ * A proper dock/taskbar integration should eventually handle minimized windows.
  */
 export function minimizeWindow(id) {
   const win = windows.get(id);
   if (!win || win.state === 'minimized') return;
 
   win.state = 'minimized';
-  win.element.classList.add('minimized');
+  win.element.classList.add('minimized', 'restorable');
   win.element.classList.remove('focused');
 
   if (focusedWindowId === id) {
@@ -147,7 +146,7 @@ export function restoreWindow(id) {
 
   if (win.state === 'minimized') {
     win.state = 'normal';
-    win.element.classList.remove('minimized');
+    win.element.classList.remove('minimized', 'restorable');
     focusWindow(id);
     return;
   }

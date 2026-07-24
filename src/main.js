@@ -171,6 +171,7 @@ function showDesktopContextMenu(e, menu) {
 // Show context menu for icon
 function showIconContextMenu(e, icon, menu) {
   const iconName = icon.querySelector('.desktop-icon-label').textContent;
+  const iconId = icon.dataset.id;
   
   menu.innerHTML = '';
   
@@ -195,6 +196,7 @@ function showIconContextMenu(e, icon, menu) {
   const sep2 = document.createElement('div');
   sep2.className = 'context-menu-separator';
   
+  
   const deleteItem = document.createElement('div');
   deleteItem.className = 'context-menu-item';
   deleteItem.dataset.action = 'delete';
@@ -216,7 +218,7 @@ function showIconContextMenu(e, icon, menu) {
       e.stopPropagation();
       const action = item.dataset.action;
       if (action === 'open') {
-        const iconData = desktopIcons.find(i => i.name === iconName);
+        const iconData = desktopIcons.find(i => i.id === iconId);
         if (iconData) {
           openIcon(iconData);
         }
