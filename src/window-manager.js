@@ -129,10 +129,10 @@ export function maximizeWindow(id) {
   win.element.classList.add('maximized');
   win.element.classList.remove('resizable');
 
-  // Position at top-left of desktop, leaving room for future dock/menu bar
+  // Position at top-left of desktop, leaving room for menu bar (25px) and dock (70px)
   const desktop = document.getElementById('desktop');
   const rect = desktop.getBoundingClientRect();
-  applyGeometry(win, 0, 0, rect.width, rect.height - 70); // 70px reserved for dock
+  applyGeometry(win, 0, 25, rect.width, rect.height - 95); // 25px menu bar + 70px dock
 }
 
 /**
