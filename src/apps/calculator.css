@@ -1,0 +1,81 @@
+/* Calculator App Styles */
+
+.calculator {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #2a2a2a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+}
+
+.calc-display {
+  padding: 20px 24px 12px;
+  text-align: right;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.calc-expression {
+  font-size: 16px;
+  color: #888;
+  min-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-result {
+  font-size: 48px;
+  font-weight: 300;
+  color: #fff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.calc-buttons {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  padding: 1px;
+  flex: 1;
+}
+
+.calc-btn {
+  border: none;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: filter 0.1s;
+  color: #fff;
+  background: #505050;
+}
+
+.calc-btn:active {
+  filter: brightness(1.3);
+}
+
+.calc-btn.fn {
+  background: #3a3a3a;
+  color: #fff;
+}
+
+.calc-btn.op {
+  background: #ff9f0a;
+  color: #fff;
+}
+
+.calc-btn.op.active {
+  background: #fff;
+  color: #ff9f0a;
+}
+
+.calc-btn.zero {
+  grid-column: span 2;
+  justify-content: flex-start;
+  padding-left: 28px;
+}

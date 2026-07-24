@@ -3,6 +3,9 @@
 
 import './dock.css';
 import { createWindow } from './window-manager.js';
+import { openCalculator } from './apps/calculator.js';
+import { openTextEditor } from './apps/text-editor.js';
+import { openSettings } from './apps/settings.js';
 
 const DEFAULT_APPS = [
   { id: 'finder', name: 'Finder', icon: '📁' },
@@ -14,6 +17,8 @@ const DEFAULT_APPS = [
   { id: 'calendar', name: 'Calendar', icon: '📅' },
   { id: 'notes', name: 'Notes', icon: '📝' },
   { id: 'music', name: 'Music', icon: '🎵' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮' },
+  { id: 'textedit', name: 'TextEdit', icon: '📄' },
   { id: 'settings', name: 'System Settings', icon: '⚙️' },
 ];
 
@@ -108,10 +113,10 @@ function handleDockItemClick(app) {
     }, 500);
   }
 
-  // Create window for the app with onClose callback
-  const windowHandle = createWindow({
+  // Launch specific apps with running state tracking
+  let windowHandle;
+  const windowOptions = {
     title: app.name,
-    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`,
     onClose: () => {
       // Remove running indicator when window closes
       runningApps.delete(app.id);
@@ -119,12 +124,43 @@ function handleDockItemClick(app) {
         item.classList.remove('running');
       }
     },
-  });
+  };
+
+  if (app.id === 'calculator') {
+    windowHandle = openCalculator();
+  } else if (app.id === 'textedit') {
+    windowHandle = openTextEditor();
+  } else if (app.id === 'settings') {
+    windowHandle = openSettings();
+  } else {
+    // Placeholder for other apps
+    const container = document.createElement('div');
+    container.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+    
+    const iconEmoji = document.createElement('div');
+    iconEmoji.style.fontSize = '64px';
+    iconEmoji.textContent = app.icon;
+    
+    const nameText = document.createElement('div');
+    nameText.style.cssText = 'font-size:16px;color:#666;';
+    nameText.textContent = app.name;
+    
+    container.appendChild(iconEmoji);
+    container.appendChild(nameText);
+    
+    windowHandle = createWindow({
+      ...windowOptions,
+      content: container,
+    });
+  }
   
   // Track the running app
-  runningApps.set(app.id, windowHandle);
-  if (item) {
-    item.classList.add('running');
+  if (windowHandle) {
+    runningApps.set(app.id, windowHandle);
+    if (item) {
+      item.classList.add('running');
+    }
+  }
   }
 }
 
@@ -141,20 +177,35 @@ function showDockItemContextMenu(e, app) {
   menu.className = 'dock-context-menu';
 
   const openLabel = isRunning ? 'Show' : 'Open';
-  const quitOption = isRunning ? `
-    <div class="dock-context-menu-item" data-action="quit">Quit</div>
-    <div class="dock-context-menu-separator"></div>
-  ` : '';
+  const menuItems = [
+    { action: 'open', label: openLabel },
+  ];
 
-  menu.innerHTML = `
-    <div class="dock-context-menu-item" data-action="open">${openLabel}</div>
-    ${quitOption}
-    <div class="dock-context-menu-item" data-action="options">Options</div>
-    <div class="dock-context-menu-separator"></div>
-    <div class="dock-context-menu-item" data-action="show-in-finder">Show in Finder</div>
-    <div class="dock-context-menu-separator"></div>
-    <div class="dock-context-menu-item" data-action="remove">Remove from Dock</div>
-  `;
+  // Add Quit option if app is running
+  if (isRunning) {
+    menuItems.push({ action: 'quit', label: 'Quit' });
+    menuItems.push({ separator: true });
+  }
+
+  menuItems.push({ action: 'options', label: 'Options' });
+  menuItems.push({ separator: true });
+  menuItems.push({ action: 'show-in-finder', label: 'Show in Finder' });
+  menuItems.push({ separator: true });
+  menuItems.push({ action: 'remove', label: 'Remove from Dock' });
+
+  menuItems.forEach(def => {
+    if (def.separator) {
+      const sep = document.createElement('div');
+      sep.className = 'dock-context-menu-separator';
+      menu.appendChild(sep);
+    } else {
+      const item = document.createElement('div');
+      item.className = 'dock-context-menu-item';
+      item.dataset.action = def.action;
+      item.textContent = def.label;
+      menu.appendChild(item);
+    }
+  });
 
   // Position menu
   const x = e.clientX;

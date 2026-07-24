@@ -144,15 +144,30 @@ function createContextMenu() {
 
 // Show context menu for desktop
 function showDesktopContextMenu(e, menu) {
-  menu.innerHTML = `
-    <div class="context-menu-item" data-action="new-folder">New Folder</div>
-    <div class="context-menu-separator"></div>
-    <div class="context-menu-item" data-action="get-info">Get Info</div>
-    <div class="context-menu-item" data-action="change-wallpaper">Change Desktop Background</div>
-    <div class="context-menu-separator"></div>
-    <div class="context-menu-item" data-action="sort-by">Sort By</div>
-    <div class="context-menu-item" data-action="clean-up">Clean Up</div>
-  `;
+  const menuItems = [
+    { action: 'new-folder', label: 'New Folder' },
+    { separator: true },
+    { action: 'get-info', label: 'Get Info' },
+    { action: 'change-wallpaper', label: 'Change Desktop Background' },
+    { separator: true },
+    { action: 'sort-by', label: 'Sort By' },
+    { action: 'clean-up', label: 'Clean Up' },
+  ];
+
+  menu.innerHTML = '';
+  menuItems.forEach(def => {
+    if (def.separator) {
+      const sep = document.createElement('div');
+      sep.className = 'context-menu-separator';
+      menu.appendChild(sep);
+    } else {
+      const item = document.createElement('div');
+      item.className = 'context-menu-item';
+      item.dataset.action = def.action;
+      item.textContent = def.label;
+      menu.appendChild(item);
+    }
+  });
   
   positionContextMenu(e, menu);
   menu.classList.add('visible');
