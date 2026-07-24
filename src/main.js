@@ -3,6 +3,7 @@
 import './style.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
+import { initMenuBar } from './menu-bar.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -17,6 +18,9 @@ const desktopIcons = [
 // Initialize desktop
 function initDesktop() {
   const desktop = document.getElementById('desktop');
+  
+  // Initialize menu bar first
+  initMenuBar(desktop);
   
   // Create desktop icons container
   const iconsContainer = document.createElement('div');

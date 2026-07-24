@@ -1,0 +1,241 @@
+/* Menu Bar Styles */
+
+.menu-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: rgba(40, 40, 40, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  z-index: 10000;
+  user-select: none;
+}
+
+.menu-bar-left,
+.menu-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.menu-item {
+  position: relative;
+  padding: 2px 8px;
+  font-size: 13px;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+}
+
+.menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu-item.active {
+  background-color: rgba(0, 122, 255, 0.8);
+}
+
+.menu-item-bold {
+  font-weight: 600;
+}
+
+.apple-logo {
+  font-size: 16px;
+  margin-top: -1px;
+}
+
+/* Dropdown menus */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 2px;
+  background: rgba(40, 40, 40, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 4px 0;
+  min-width: 200px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 10001;
+}
+
+.dropdown-menu.visible {
+  display: block;
+}
+
+.dropdown-menu-item {
+  padding: 6px 16px;
+  font-size: 13px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background-color 0.15s;
+}
+
+.dropdown-menu-item:hover {
+  background-color: rgba(0, 122, 255, 0.8);
+}
+
+.dropdown-menu-item.disabled {
+  color: rgba(255, 255, 255, 0.4);
+  cursor: default;
+}
+
+.dropdown-menu-item.disabled:hover {
+  background-color: transparent;
+}
+
+.dropdown-menu-separator {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 4px 0;
+}
+
+.menu-shortcut {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-left: 24px;
+}
+
+/* Status icons */
+.status-icon {
+  padding: 2px 6px;
+  font-size: 13px;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-icon:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.status-text {
+  font-size: 13px;
+  color: white;
+  padding: 2px 6px;
+}
+
+/* Control Center dropdown */
+.control-center {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 2px;
+  background: rgba(40, 40, 40, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  width: 280px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: none;
+  z-index: 10001;
+}
+
+.control-center.visible {
+  display: block;
+}
+
+.control-center-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.control-center-row:last-child {
+  margin-bottom: 0;
+}
+
+.control-tile {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.control-tile:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.control-tile-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+}
+
+.control-tile-value {
+  font-size: 13px;
+  color: white;
+  font-weight: 500;
+}
+
+.control-tile-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.control-tile.active {
+  background: rgba(0, 122, 255, 0.8);
+}
+
+/* Slider controls */
+.control-slider {
+  margin-top: 8px;
+}
+
+.control-slider-label {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+}
+
+.control-slider-input {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.control-slider-input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.control-slider-input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: none;
+}
