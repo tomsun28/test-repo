@@ -16,7 +16,7 @@ body {
   height: 100%;
   background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
   position: relative;
-  padding: 45px 20px 20px 20px;
+  padding: 44px 20px 20px 20px;
   overflow: hidden;
 }
 
@@ -26,7 +26,7 @@ body {
   grid-template-rows: repeat(auto-fill, 100px);
   gap: 10px;
   position: absolute;
-  top: 45px;
+  top: 44px;
   left: 20px;
   right: 20px;
   bottom: 80px;
