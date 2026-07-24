@@ -111,3 +111,183 @@ body {
   background: rgba(255, 255, 255, 0.2);
   margin: 6px 0;
 }
+
+/* Window Management System */
+.window {
+  position: absolute;
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  min-width: 300px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.window.minimized {
+  opacity: 0;
+  transform: scale(0.1);
+  pointer-events: none;
+}
+
+.window.maximized {
+  border-radius: 0;
+}
+
+.window-header {
+  height: 38px;
+  background: rgba(45, 45, 45, 0.95);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  cursor: move;
+  user-select: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.window-control {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+}
+
+.window-control::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.15s;
+  font-size: 9px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.window:hover .window-control::before {
+  opacity: 1;
+}
+
+.window-control.close {
+  background: #ff5f57;
+}
+
+.window-control.close::before {
+  content: '×';
+}
+
+.window-control.minimize {
+  background: #ffbd2e;
+}
+
+.window-control.minimize::before {
+  content: '−';
+}
+
+.window-control.maximize {
+  background: #28c840;
+}
+
+.window-control.maximize::before {
+  content: '+';
+}
+
+.window-title {
+  flex: 1;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 500;
+  margin-right: 60px; /* Balance the controls */
+}
+
+.window-content {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Resize handles */
+.window-resize-handle {
+  position: absolute;
+  background: transparent;
+}
+
+.window-resize-handle.n {
+  top: 0;
+  left: 10px;
+  right: 10px;
+  height: 5px;
+  cursor: n-resize;
+}
+
+.window-resize-handle.s {
+  bottom: 0;
+  left: 10px;
+  right: 10px;
+  height: 5px;
+  cursor: s-resize;
+}
+
+.window-resize-handle.e {
+  top: 10px;
+  right: 0;
+  bottom: 10px;
+  width: 5px;
+  cursor: e-resize;
+}
+
+.window-resize-handle.w {
+  top: 10px;
+  left: 0;
+  bottom: 10px;
+  width: 5px;
+  cursor: w-resize;
+}
+
+.window-resize-handle.ne {
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  cursor: ne-resize;
+}
+
+.window-resize-handle.nw {
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  cursor: nw-resize;
+}
+
+.window-resize-handle.se {
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  cursor: se-resize;
+}
+
+.window-resize-handle.sw {
+  bottom: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  cursor: sw-resize;
+}

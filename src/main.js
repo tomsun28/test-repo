@@ -1,6 +1,7 @@
 // Web macOS Desktop - Main Entry Point
 
 import './style.css';
+import { createWindow } from './windowManager.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -52,7 +53,7 @@ function createDesktopIcon(iconData) {
   // Double click to open
   icon.addEventListener('dblclick', (e) => {
     e.stopPropagation();
-    console.log(`Opening ${iconData.name}`);
+    openIcon(iconData);
   });
   
   return icon;
@@ -67,6 +68,25 @@ function selectIcon(icon) {
   
   // Select clicked icon
   icon.classList.add('selected');
+}
+
+// Open desktop icon in window
+function openIcon(iconData) {
+  const content = `
+    <div style="padding: 20px;">
+      <h2>${iconData.name}</h2>
+      <p>Content for ${iconData.name}</p>
+      <p>This is a placeholder window for the ${iconData.name} item.</p>
+    </div>
+  `;
+  
+  createWindow({
+    id: `window-${iconData.id}`,
+    title: iconData.name,
+    content: content,
+    width: 600,
+    height: 400
+  });
 }
 
 // Initialize context menu
@@ -185,7 +205,6 @@ if (document.readyState === 'loading') {
   initDesktop();
 }
 
-// TODO: Implement window management
 // TODO: Implement Dock
 // TODO: Implement menu bar
 // TODO: Implement applications
