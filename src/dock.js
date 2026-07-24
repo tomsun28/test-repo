@@ -3,6 +3,7 @@
 
 import './dock.css';
 import { createWindow } from './window-manager.js';
+import { openFinder } from './finder.js';
 import { createCalculator } from './apps/calculator.js';
 import { createTextEditor } from './apps/text-editor.js';
 import { createSettings } from './apps/settings.js';
@@ -166,6 +167,17 @@ function handleDockItemClick(app) {
     setTimeout(() => {
       item.classList.remove('bounce');
     }, 500);
+  }
+
+  // Special handling for Finder app
+  if (app.id === 'finder') {
+    const windowHandle = openFinder('/');
+    runningApps.set(app.id, windowHandle);
+    const item = dockItems.get(app.id);
+    if (item) {
+      item.classList.add('running');
+    }
+    return;
   }
 
   openApp(app);
