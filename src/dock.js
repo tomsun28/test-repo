@@ -171,9 +171,16 @@ function handleDockItemClick(app) {
 
   // Special handling for Finder app
   if (app.id === 'finder') {
-    const windowHandle = openFinder('/');
-    runningApps.set(app.id, windowHandle);
     const item = dockItems.get(app.id);
+    const windowHandle = openFinder('/', {
+      onClose: () => {
+        runningApps.delete(app.id);
+        if (item) {
+          item.classList.remove('running');
+        }
+      }
+    });
+    runningApps.set(app.id, windowHandle);
     if (item) {
       item.classList.add('running');
     }

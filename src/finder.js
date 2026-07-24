@@ -142,7 +142,7 @@ function navigateToPath(path) {
 }
 
 // Create Finder window
-export function openFinder(initialPath = '/') {
+export function openFinder(initialPath = '/', options = {}) {
   let currentPath = initialPath;
   let viewMode = 'grid'; // 'grid' or 'list'
   let history = [initialPath];
@@ -474,6 +474,7 @@ export function openFinder(initialPath = '/') {
     minWidth: 600,
     minHeight: 400,
     content: content,
+    onClose: options.onClose,
   });
   
   return win;
