@@ -65,3 +65,49 @@
   justify-content: space-between;
   flex-shrink: 0;
 }
+
+/* ---- Responsive: Mobile (<=768px) ---- */
+@media (max-width: 768px) {
+  .text-editor-toolbar {
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  .text-editor-toolbar button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .text-editor-textarea {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .text-editor-status {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
+/* ---- Responsive: Small mobile (<=480px) ---- */
+@media (max-width: 480px) {
+  .text-editor-toolbar {
+    gap: 4px;
+    padding: 5px 8px;
+  }
+
+  .text-editor-toolbar button {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .text-editor-textarea {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .text-editor-status {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+}

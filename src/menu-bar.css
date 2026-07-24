@@ -121,3 +121,82 @@
   font-weight: 500;
   cursor: default;
 }
+
+/* ---- Responsive: Tablet (<=1024px) ---- */
+@media (max-width: 1024px) {
+  .menu-bar {
+    font-size: 12px;
+    padding: 0 6px;
+  }
+
+  .menu-item {
+    padding: 2px 8px;
+  }
+
+  .menu-bar-right {
+    gap: 8px;
+    font-size: 11px;
+  }
+
+  .menu-dropdown {
+    min-width: 200px;
+  }
+}
+
+/* ---- Responsive: Mobile (<=768px) ---- */
+@media (max-width: 768px) {
+  .menu-bar {
+    height: 28px;
+    font-size: 11px;
+    padding: 0 4px;
+  }
+
+  .menu-item {
+    padding: 2px 6px;
+  }
+
+  /* Hide non-essential menus on mobile */
+  .menu-item[data-menu="view"],
+  .menu-item[data-menu="window"],
+  .menu-item[data-menu="help"] {
+    display: none;
+  }
+
+  .menu-bar-right {
+    gap: 6px;
+    font-size: 10px;
+  }
+
+  /* Hide WiFi and battery on small screens, keep time */
+  .status-icon {
+    display: none;
+  }
+
+  .menu-dropdown {
+    min-width: 180px;
+    font-size: 13px;
+  }
+
+  .menu-dropdown-item {
+    padding: 8px 16px;
+  }
+}
+
+/* ---- Responsive: Small mobile (<=480px) ---- */
+@media (max-width: 480px) {
+  .menu-bar {
+    height: 30px;
+  }
+
+  .menu-item {
+    padding: 2px 4px;
+  }
+
+  .menu-item[data-menu="edit"] {
+    display: none;
+  }
+
+  .menu-bar-right {
+    gap: 4px;
+  }
+}

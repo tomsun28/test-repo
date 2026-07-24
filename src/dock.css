@@ -145,3 +145,74 @@
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.6);
 }
+
+/* ---- Responsive: Tablet (<=1024px) ---- */
+@media (max-width: 1024px) {
+  .dock {
+    height: 60px;
+    padding: 6px 10px;
+    gap: 3px;
+  }
+
+  .dock-icon {
+    width: 42px;
+    height: 42px;
+    font-size: 32px;
+  }
+
+  .dock-separator {
+    height: 42px;
+    margin: 0 6px;
+  }
+}
+
+/* ---- Responsive: Mobile (<=768px) ---- */
+@media (max-width: 768px) {
+  .dock {
+    height: 56px;
+    padding: 5px 8px;
+    gap: 2px;
+    border-radius: 12px;
+    bottom: 6px;
+  }
+
+  .dock-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+    border-radius: 10px;
+  }
+
+  .dock-separator {
+    height: 40px;
+    margin: 0 4px;
+  }
+
+  .dock-tooltip {
+    display: none;
+  }
+}
+
+/* ---- Responsive: Small mobile (<=480px) ---- */
+@media (max-width: 480px) {
+  .dock {
+    height: 50px;
+    padding: 4px 6px;
+    gap: 1px;
+    max-width: 95%;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .dock-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    border-radius: 8px;
+  }
+
+  .dock-separator {
+    height: 36px;
+    margin: 0 3px;
+  }
+}
