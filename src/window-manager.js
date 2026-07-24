@@ -400,6 +400,7 @@ function setupDrag(win, titlebar) {
 
   document.addEventListener('touchmove', onTouchMove, { passive: false });
   document.addEventListener('touchend', onTouchEnd);
+  document.addEventListener('touchcancel', onTouchEnd);
 
   // Store references for cleanup
   if (!win._listeners) win._listeners = [];
@@ -408,6 +409,7 @@ function setupDrag(win, titlebar) {
     { target: document, type: 'mouseup', handler: onMouseUp },
     { target: document, type: 'touchmove', handler: onTouchMove },
     { target: document, type: 'touchend', handler: onTouchEnd },
+    { target: document, type: 'touchcancel', handler: onTouchEnd },
   );
 }
 
@@ -507,6 +509,7 @@ function setupResize(win, handle, direction) {
 
   document.addEventListener('touchmove', onTouchMove, { passive: false });
   document.addEventListener('touchend', onTouchEnd);
+  document.addEventListener('touchcancel', onTouchEnd);
 
   // Store references for cleanup
   if (!win._listeners) win._listeners = [];
@@ -515,5 +518,6 @@ function setupResize(win, handle, direction) {
     { target: document, type: 'mouseup', handler: onMouseUp },
     { target: document, type: 'touchmove', handler: onTouchMove },
     { target: document, type: 'touchend', handler: onTouchEnd },
+    { target: document, type: 'touchcancel', handler: onTouchEnd },
   );
 }
