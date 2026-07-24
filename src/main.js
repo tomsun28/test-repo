@@ -2,6 +2,7 @@
 
 import './style.css';
 import { createWindow } from './window-manager.js';
+import { initDock } from './dock.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -31,6 +32,9 @@ function initDesktop() {
   
   // Initialize context menu
   initContextMenu(desktop, iconsContainer);
+  
+  // Initialize dock bar
+  initDock();
 }
 
 // Create desktop icon element
