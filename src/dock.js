@@ -24,6 +24,7 @@ const defaultDockApps = [
 
 // Track running apps
 const runningApps = new Set();
+const appWindows = new Map(); // Track window handles by appId
 
 let dockElement = null;
 let contextMenu = null;
@@ -102,6 +103,13 @@ function createDockItem(app) {
 function launchApp(app, dockItem) {
   console.log(`Launching app: ${app.name}`);
   
+  // If app is already running, focus the existing window
+  if (runningApps.has(app.id) && appWindows.has(app.id)) {
+    const existingWindow = appWindows.get(app.id);
+    existingWindow.focus();
+    return;
+  }
+  
   // Add bounce animation
   dockItem.classList.add('bouncing');
   setTimeout(() => {
@@ -114,15 +122,19 @@ function launchApp(app, dockItem) {
   
   // Import window manager dynamically to avoid circular dependency
   import('./window-manager.js').then(({ createWindow }) => {
-    createWindow({
+    const windowHandle = createWindow({
       title: app.name,
       content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`,
       onClose: () => {
         // Remove running indicator when window closes
         runningApps.delete(app.id);
+        appWindows.delete(app.id);
         dockItem.classList.remove('running');
       }
     });
+    
+    // Store window handle for focus management
+    appWindows.set(app.id, windowHandle);
   });
 }
 
