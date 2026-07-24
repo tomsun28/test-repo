@@ -22,6 +22,11 @@ const DEFAULTS = {
   onClose: null,
 };
 
+// Check if mobile viewport
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
 /**
  * Create and open a new window.
  * @param {Object} options
@@ -31,23 +36,17 @@ export function createWindow(options = {}) {
   const opts = { ...DEFAULTS, ...options };
   const id = `window-${++windowIdCounter}`;
 
-  // Stagger new windows, but clamp on small screens
-  const offset = (windowIdCounter % 8) * 30;
-  const isSmall = window.innerWidth <= 768;
-  const stagger = isSmall ? Math.min(offset, 40) : offset;
-  opts.x += stagger;
-  opts.y += stagger;
-
-  // On small screens, clamp window to viewport so it stays visible
-  if (isSmall) {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const maxW = Math.min(opts.width, vw - 10);
-    const maxH = Math.min(opts.height, vh - 90); // leave room for dock + menu bar
-    opts.width = Math.max(opts.minWidth, maxW);
-    opts.height = Math.max(opts.minHeight, maxH);
-    opts.x = Math.min(opts.x, Math.max(5, vw - opts.width - 5));
-    opts.y = Math.min(opts.y, Math.max(30, vh - opts.height - 90));
+  // On mobile, use full screen dimensions
+  if (isMobile()) {
+    opts.x = 0;
+    opts.y = 0;
+    opts.width = window.innerWidth;
+    opts.height = window.innerHeight - 22; // Account for menu bar
+  } else {
+    // Stagger new windows on desktop
+    const offset = (windowIdCounter % 8) * 30;
+    opts.x += offset;
+    opts.y += offset;
   }
 
   const win = {
@@ -296,13 +295,6 @@ function buildWindowDOM(win, content) {
     }
   });
 
-  // Event: focus on touch
-  el.addEventListener('touchstart', (e) => {
-    if (!e.target.closest('.resize-handle')) {
-      focusWindow(win.id);
-    }
-  }, { passive: true });
-
   // Drag behavior on titlebar
   setupDrag(win, titlebar);
 
@@ -349,68 +341,75 @@ function applyGeometry(win, x, y, width, height) {
 
 // ---- Drag Behavior ----
 
-// Helper to extract clientX/clientY from both mouse and touch events.
-function getPointerCoords(e) {
-  if (e.touches && e.touches.length > 0) {
-    return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
-  }
-  if (e.changedTouches && e.changedTouches.length > 0) {
-    return { clientX: e.changedTouches[0].clientX, clientY: e.changedTouches[0].clientY };
-  }
-  return { clientX: e.clientX, clientY: e.clientY };
-}
-
 function setupDrag(win, titlebar) {
   let dragging = false;
   let startX, startY, origX, origY;
 
-  const onStart = (e) => {
-    // Don't drag if clicking traffic lights or if maximized
-    if (e.target.closest('.traffic-lights')) return;
-    if (win.state === 'maximized') return;
-
+  const startDrag = (clientX, clientY) => {
     dragging = true;
-    const coords = getPointerCoords(e);
-    startX = coords.clientX;
-    startY = coords.clientY;
+    startX = clientX;
+    startY = clientY;
     origX = win.x;
     origY = win.y;
-    if (e.cancelable) e.preventDefault();
   };
 
-  const onMove = (e) => {
+  const doDrag = (clientX, clientY) => {
     if (!dragging) return;
-    const coords = getPointerCoords(e);
-    const dx = coords.clientX - startX;
-    const dy = coords.clientY - startY;
+    const dx = clientX - startX;
+    const dy = clientY - startY;
     const newX = origX + dx;
     const newY = Math.max(0, origY + dy); // don't go above screen top
     applyGeometry(win, newX, newY, win.width, win.height);
-    if (e.cancelable) e.preventDefault();
   };
 
-  const onEnd = () => {
+  const endDrag = () => {
     dragging = false;
   };
 
-  titlebar.addEventListener('mousedown', onStart);
-  titlebar.addEventListener('touchstart', onStart, { passive: false });
+  // Mouse events
+  titlebar.addEventListener('mousedown', (e) => {
+    // Don't drag if clicking traffic lights or if maximized
+    if (e.target.closest('.traffic-lights')) return;
+    if (win.state === 'maximized') return;
+    startDrag(e.clientX, e.clientY);
+    e.preventDefault();
+  });
 
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('touchmove', onMove, { passive: false });
+  const onMouseMove = (e) => doDrag(e.clientX, e.clientY);
+  const onMouseUp = () => endDrag();
 
-  document.addEventListener('mouseup', onEnd);
-  document.addEventListener('touchend', onEnd);
-  document.addEventListener('touchcancel', onEnd);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  // Touch events
+  titlebar.addEventListener('touchstart', (e) => {
+    if (e.target.closest('.traffic-lights')) return;
+    if (win.state === 'maximized') return;
+    const touch = e.touches[0];
+    startDrag(touch.clientX, touch.clientY);
+  }, { passive: true });
+
+  const onTouchMove = (e) => {
+    if (!dragging) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    doDrag(touch.clientX, touch.clientY);
+  };
+
+  const onTouchEnd = () => endDrag();
+
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+  document.addEventListener('touchend', onTouchEnd);
+  document.addEventListener('touchcancel', onTouchEnd);
 
   // Store references for cleanup
   if (!win._listeners) win._listeners = [];
   win._listeners.push(
-    { target: document, type: 'mousemove', handler: onMove },
-    { target: document, type: 'mouseup', handler: onEnd },
-    { target: document, type: 'touchmove', handler: onMove },
-    { target: document, type: 'touchend', handler: onEnd },
-    { target: document, type: 'touchcancel', handler: onEnd },
+    { target: document, type: 'mousemove', handler: onMouseMove },
+    { target: document, type: 'mouseup', handler: onMouseUp },
+    { target: document, type: 'touchmove', handler: onTouchMove },
+    { target: document, type: 'touchend', handler: onTouchEnd },
+    { target: document, type: 'touchcancel', handler: onTouchEnd },
   );
 }
 
@@ -420,25 +419,21 @@ function setupResize(win, handle, direction) {
   let resizing = false;
   let startX, startY, origX, origY, origW, origH;
 
-  const onStart = (e) => {
+  const startResize = (clientX, clientY) => {
     if (win.state === 'maximized') return;
     resizing = true;
-    const coords = getPointerCoords(e);
-    startX = coords.clientX;
-    startY = coords.clientY;
+    startX = clientX;
+    startY = clientY;
     origX = win.x;
     origY = win.y;
     origW = win.width;
     origH = win.height;
-    if (e.cancelable) e.preventDefault();
-    e.stopPropagation();
   };
 
-  const onMove = (e) => {
+  const doResize = (clientX, clientY) => {
     if (!resizing) return;
-    const coords = getPointerCoords(e);
-    const dx = coords.clientX - startX;
-    const dy = coords.clientY - startY;
+    const dx = clientX - startX;
+    const dy = clientY - startY;
 
     let newX = origX;
     let newY = origY;
@@ -476,30 +471,53 @@ function setupResize(win, handle, direction) {
     }
 
     applyGeometry(win, newX, newY, newW, newH);
-    if (e.cancelable) e.preventDefault();
   };
 
-  const onEnd = () => {
+  const endResize = () => {
     resizing = false;
   };
 
-  handle.addEventListener('mousedown', onStart);
-  handle.addEventListener('touchstart', onStart, { passive: false });
+  // Mouse events
+  handle.addEventListener('mousedown', (e) => {
+    startResize(e.clientX, e.clientY);
+    e.preventDefault();
+    e.stopPropagation();
+  });
 
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('touchmove', onMove, { passive: false });
+  const onMouseMove = (e) => doResize(e.clientX, e.clientY);
+  const onMouseUp = () => endResize();
 
-  document.addEventListener('mouseup', onEnd);
-  document.addEventListener('touchend', onEnd);
-  document.addEventListener('touchcancel', onEnd);
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  // Touch events
+  handle.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    startResize(touch.clientX, touch.clientY);
+    e.preventDefault();
+    e.stopPropagation();
+  }, { passive: false });
+
+  const onTouchMove = (e) => {
+    if (!resizing) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    doResize(touch.clientX, touch.clientY);
+  };
+
+  const onTouchEnd = () => endResize();
+
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+  document.addEventListener('touchend', onTouchEnd);
+  document.addEventListener('touchcancel', onTouchEnd);
 
   // Store references for cleanup
   if (!win._listeners) win._listeners = [];
   win._listeners.push(
-    { target: document, type: 'mousemove', handler: onMove },
-    { target: document, type: 'mouseup', handler: onEnd },
-    { target: document, type: 'touchmove', handler: onMove },
-    { target: document, type: 'touchend', handler: onEnd },
-    { target: document, type: 'touchcancel', handler: onEnd },
+    { target: document, type: 'mousemove', handler: onMouseMove },
+    { target: document, type: 'mouseup', handler: onMouseUp },
+    { target: document, type: 'touchmove', handler: onTouchMove },
+    { target: document, type: 'touchend', handler: onTouchEnd },
+    { target: document, type: 'touchcancel', handler: onTouchEnd },
   );
 }

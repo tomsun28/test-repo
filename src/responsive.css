@@ -575,3 +575,264 @@
     margin-bottom: 20px;
   }
 }
+
+/* ============================================================================
+   MOBILE & TOUCH ENHANCEMENTS (additional mobile support)
+   ============================================================================ */
+
+/* Mobile breakpoint - responsive app layouts */
+@media (max-width: 768px) {
+  /* Windows - full screen on mobile */
+  .window {
+    min-width: 100vw !important;
+    min-height: calc(100vh - 28px) !important;
+    width: 100vw !important;
+    height: calc(100vh - 28px) !important;
+    max-width: 100vw !important;
+    max-height: calc(100vh - 28px) !important;
+    left: 0 !important;
+    top: 22px !important;
+    border-radius: 0 !important;
+  }
+
+  /* Hide resize handles on mobile */
+  .resize-handle {
+    display: none;
+  }
+
+  /* Calculator app - compact on mobile */
+  .calculator-display {
+    padding: 16px 20px 10px;
+    font-size: 48px;
+    min-height: 70px;
+  }
+
+  .calculator-display.shrink-1 { font-size: 40px; }
+  .calculator-display.shrink-2 { font-size: 32px; }
+  .calculator-display.shrink-3 { font-size: 26px; }
+
+  .calc-btn {
+    padding: 14px 0;
+    font-size: 18px;
+  }
+
+  .calc-btn.operator {
+    font-size: 22px;
+  }
+
+  /* Text editor app - compact on mobile */
+  .text-editor-toolbar {
+    padding: 6px 10px;
+    gap: 8px;
+  }
+
+  .text-editor-toolbar button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  .text-editor-textarea {
+    padding: 12px;
+    font-size: 13px;
+  }
+
+  .text-editor-status {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  /* Settings app - horizontal scrolling sidebar on mobile */
+  .settings {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 120px;
+    border-right: none;
+    border-bottom: 1px solid #d1d1d1;
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .settings-sidebar-item {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .settings-sidebar-icon {
+    font-size: 16px;
+    width: 20px;
+  }
+
+  .settings-content {
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .settings-title {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .settings-group-title {
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  .settings-row {
+    padding: 10px 0;
+    flex-wrap: wrap;
+  }
+
+  .settings-label {
+    font-size: 13px;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .settings-toggle {
+    width: 40px;
+    height: 22px;
+  }
+
+  .settings-toggle-knob {
+    width: 18px;
+    height: 18px;
+  }
+
+  .settings-toggle.active .settings-toggle-knob {
+    transform: translateX(18px);
+  }
+
+  .settings-select {
+    padding: 6px 10px;
+    font-size: 13px;
+    max-width: 150px;
+  }
+}
+
+/* Small mobile breakpoint - further compaction */
+@media (max-width: 480px) {
+  .calculator-display {
+    font-size: 40px;
+    min-height: 60px;
+  }
+
+  .calc-btn {
+    padding: 12px 0;
+    font-size: 16px;
+  }
+
+  .calc-btn.operator {
+    font-size: 20px;
+  }
+
+  .settings-sidebar {
+    max-height: 100px;
+  }
+
+  .settings-sidebar-item {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+
+  .settings-content {
+    padding: 12px;
+  }
+
+  .settings-title {
+    font-size: 20px;
+  }
+
+  .settings-select {
+    max-width: 120px;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .settings-sidebar {
+    max-height: 80px;
+  }
+}
+
+/* Touch device optimizations - larger targets, disabled hover effects */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch target sizes */
+  .desktop-icon {
+    padding: 12px;
+  }
+
+  .dock-item {
+    padding: 4px;
+  }
+
+  .traffic-light {
+    width: 14px;
+    height: 14px;
+  }
+
+  .menu-item {
+    padding: 4px 12px;
+  }
+
+  .context-menu-item,
+  .dock-context-menu-item {
+    padding: 10px 16px;
+  }
+
+  .settings-toggle {
+    width: 48px;
+    height: 26px;
+  }
+
+  .settings-toggle-knob {
+    width: 22px;
+    height: 22px;
+  }
+
+  .settings-toggle.active .settings-toggle-knob {
+    transform: translateX(22px);
+  }
+
+  /* Remove hover effects that don't work well on touch */
+  .desktop-icon:hover {
+    background-color: transparent;
+  }
+
+  .desktop-icon.selected {
+    background-color: rgba(0, 122, 255, 0.3);
+  }
+
+  .menu-item:hover {
+    background: transparent;
+  }
+
+  .calc-btn:hover {
+    background: #333;
+  }
+
+  .calc-btn.function:hover {
+    background: #a5a5a5;
+  }
+
+  .calc-btn.operator:hover {
+    background: #ff9f0a;
+  }
+}
+
+/* Prevent text selection and tap highlight on mobile */
+@media (max-width: 768px) {
+  .desktop-icon,
+  .dock-item,
+  .menu-item,
+  .window-titlebar {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+}
