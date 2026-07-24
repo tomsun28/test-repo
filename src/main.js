@@ -4,6 +4,8 @@ import './style.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
 import { initMenuBar } from './menu-bar.js';
+import { openFinder } from './finder.js';
+import { initInteractionOptimizer } from './interaction-optimizer.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -39,6 +41,9 @@ function initDesktop() {
   
   // Initialize dock
   initDock();
+  
+  // Initialize interaction optimizations (animations, shortcuts, etc.)
+  initInteractionOptimizer();
 }
 
 // Create desktop icon element
@@ -75,6 +80,18 @@ function createDesktopIcon(iconData) {
 
 // Open an icon (creates a window)
 function openIcon(iconData) {
+  // Special handling for folder icons - open in Finder
+  if (['macintosh-hd', 'documents', 'downloads', 'applications'].includes(iconData.id)) {
+    const pathMap = {
+      'macintosh-hd': '/',
+      'documents': '/Documents',
+      'downloads': '/Downloads',
+      'applications': '/Applications'
+    };
+    openFinder(pathMap[iconData.id] || '/');
+    return;
+  }
+
   const contentDiv = document.createElement('div');
   contentDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
   

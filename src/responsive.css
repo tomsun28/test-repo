@@ -1,0 +1,577 @@
+/* Responsive Design - Mobile and Tablet Support */
+
+/* Large Desktop (1920px+) */
+@media (min-width: 1920px) {
+  .desktop-icon {
+    width: 100px;
+    height: 110px;
+  }
+  
+  .desktop-icon-image {
+    width: 72px;
+    height: 72px;
+    font-size: 56px;
+  }
+  
+  .desktop-icon-label {
+    font-size: 13px;
+  }
+  
+  .dock-item-icon {
+    width: 56px;
+    height: 56px;
+    font-size: 38px;
+  }
+  
+  .dock-item.magnified .dock-item-icon {
+    width: 72px;
+    height: 72px;
+    font-size: 50px;
+  }
+}
+
+/* Desktop (1440px - 1919px) */
+@media (min-width: 1440px) and (max-width: 1919px) {
+  .desktop-icon {
+    width: 95px;
+    height: 105px;
+  }
+  
+  .desktop-icon-image {
+    width: 68px;
+    height: 68px;
+    font-size: 52px;
+  }
+}
+
+/* Laptop (1024px - 1439px) */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 85px);
+    grid-template-rows: repeat(auto-fill, 95px);
+  }
+  
+  .desktop-icon {
+    width: 85px;
+    height: 95px;
+  }
+  
+  .desktop-icon-image {
+    width: 60px;
+    height: 60px;
+    font-size: 44px;
+  }
+  
+  .dock-item-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 30px;
+  }
+  
+  .dock-item.magnified .dock-item-icon {
+    width: 58px;
+    height: 58px;
+    font-size: 40px;
+  }
+  
+  .window-titlebar {
+    height: 34px;
+  }
+  
+  .traffic-light {
+    width: 11px;
+    height: 11px;
+  }
+}
+
+/* Tablet Portrait (768px - 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  #desktop {
+    padding: 40px 16px 16px 16px;
+  }
+  
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 80px);
+    grid-template-rows: repeat(auto-fill, 90px);
+    top: 40px;
+    left: 16px;
+    right: 16px;
+    bottom: 75px;
+  }
+  
+  .desktop-icon {
+    width: 80px;
+    height: 90px;
+  }
+  
+  .desktop-icon-image {
+    width: 56px;
+    height: 56px;
+    font-size: 40px;
+  }
+  
+  .desktop-icon-label {
+    font-size: 11px;
+  }
+  
+  .dock {
+    padding: 3px 6px;
+    bottom: 6px;
+  }
+  
+  .dock-item-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+    border-radius: 10px;
+  }
+  
+  .dock-item.magnified .dock-item-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 36px;
+  }
+  
+  .dock-item.magnified-neighbor .dock-item-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 32px;
+  }
+  
+  .window-titlebar {
+    height: 32px;
+    padding: 0 10px;
+  }
+  
+  .traffic-light {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .traffic-lights {
+    gap: 6px;
+  }
+  
+  .window-title {
+    font-size: 12px;
+  }
+  
+  .window-content {
+    padding: 12px;
+  }
+}
+
+/* Tablet Landscape (768px - 1023px) with landscape orientation */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 75px);
+  }
+  
+  .dock {
+    gap: 3px;
+  }
+}
+
+/* Mobile Landscape (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+  .menu-bar {
+    height: 32px;
+    padding: 0 6px;
+  }
+  
+  .menu-bar-item {
+    font-size: 12px;
+    padding: 0 6px;
+  }
+  
+  .menu-bar-logo {
+    font-size: 14px;
+  }
+  
+  #desktop {
+    padding: 36px 12px 12px 12px;
+  }
+  
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 70px);
+    grid-template-rows: repeat(auto-fill, 80px);
+    gap: 8px;
+    top: 36px;
+    left: 12px;
+    right: 12px;
+    bottom: 70px;
+  }
+  
+  .desktop-icon {
+    width: 70px;
+    height: 80px;
+    padding: 6px;
+  }
+  
+  .desktop-icon-image {
+    width: 48px;
+    height: 48px;
+    font-size: 36px;
+    margin-bottom: 4px;
+  }
+  
+  .desktop-icon-label {
+    font-size: 10px;
+  }
+  
+  .dock {
+    padding: 3px 5px;
+    bottom: 5px;
+    border-radius: 14px;
+  }
+  
+  .dock-item-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 24px;
+    border-radius: 9px;
+  }
+  
+  .dock-item.magnified .dock-item-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 32px;
+  }
+  
+  .dock-item.magnified-neighbor .dock-item-icon {
+    width: 41px;
+    height: 41px;
+    font-size: 28px;
+  }
+  
+  .dock-separator {
+    height: 30px;
+  }
+  
+  .dock-item-tooltip {
+    display: none; /* Hide tooltips on mobile */
+  }
+  
+  .window-titlebar {
+    height: 30px;
+    padding: 0 8px;
+  }
+  
+  .traffic-light {
+    width: 9px;
+    height: 9px;
+  }
+  
+  .traffic-lights {
+    gap: 5px;
+    margin-right: 8px;
+  }
+  
+  .window-title {
+    font-size: 11px;
+  }
+  
+  .window-content {
+    padding: 10px;
+    font-size: 13px;
+  }
+  
+  .context-menu,
+  .dock-context-menu {
+    min-width: 160px;
+    font-size: 12px;
+  }
+  
+  .context-menu-item,
+  .dock-context-menu-item {
+    padding: 6px 12px;
+  }
+  
+  /* Disable hover effects on mobile */
+  .desktop-icon:hover {
+    background-color: transparent;
+  }
+  
+  .desktop-icon.selected:hover {
+    background-color: rgba(0, 122, 255, 0.3);
+  }
+  
+  .dock-item:hover {
+    transform: none;
+  }
+}
+
+/* Mobile Portrait (max-width: 479px) */
+@media (max-width: 479px) {
+  .menu-bar {
+    height: 28px;
+    padding: 0 4px;
+  }
+  
+  .menu-bar-item {
+    font-size: 11px;
+    padding: 0 4px;
+  }
+  
+  .menu-bar-logo {
+    font-size: 13px;
+  }
+  
+  .status-icon {
+    font-size: 12px;
+  }
+  
+  #desktop {
+    padding: 32px 8px 8px 8px;
+  }
+  
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 65px);
+    grid-template-rows: repeat(auto-fill, 75px);
+    gap: 6px;
+    top: 32px;
+    left: 8px;
+    right: 8px;
+    bottom: 65px;
+  }
+  
+  .desktop-icon {
+    width: 65px;
+    height: 75px;
+    padding: 4px;
+  }
+  
+  .desktop-icon-image {
+    width: 44px;
+    height: 44px;
+    font-size: 32px;
+    margin-bottom: 2px;
+  }
+  
+  .desktop-icon-label {
+    font-size: 9px;
+    line-height: 1.1;
+  }
+  
+  .dock {
+    padding: 2px 4px;
+    bottom: 4px;
+    border-radius: 12px;
+    gap: 2px;
+  }
+  
+  .dock-item-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 22px;
+    border-radius: 8px;
+  }
+  
+  .dock-item.magnified .dock-item-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 28px;
+  }
+  
+  .dock-item.magnified-neighbor .dock-item-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 25px;
+  }
+  
+  .dock-separator {
+    height: 26px;
+  }
+  
+  .dock-item-indicator {
+    width: 3px;
+    height: 3px;
+  }
+  
+  .window {
+    border-radius: 8px;
+  }
+  
+  .window-titlebar {
+    height: 28px;
+    padding: 0 6px;
+  }
+  
+  .traffic-light {
+    width: 8px;
+    height: 8px;
+  }
+  
+  .traffic-lights {
+    gap: 4px;
+    margin-right: 6px;
+  }
+  
+  .window-title {
+    font-size: 10px;
+  }
+  
+  .window-content {
+    padding: 8px;
+    font-size: 12px;
+  }
+  
+  .resize-handle {
+    display: none; /* Disable resize handles on small mobile */
+  }
+  
+  .context-menu,
+  .dock-context-menu {
+    min-width: 140px;
+    font-size: 11px;
+    padding: 4px 0;
+  }
+  
+  .context-menu-item,
+  .dock-context-menu-item {
+    padding: 5px 10px;
+  }
+  
+  /* Hide dock tooltips on mobile */
+  .dock-item-tooltip {
+    display: none;
+  }
+  
+  /* Simplify menu bar on small screens */
+  .menu-bar-item:not(.menu-bar-logo):not(:first-of-type) {
+    display: none;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Increase touch targets */
+  .desktop-icon {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .traffic-light {
+    min-width: 12px;
+    min-height: 12px;
+  }
+  
+  .dock-item {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .context-menu-item,
+  .dock-context-menu-item,
+  .menu-item {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* Remove hover effects that don't work on touch */
+  .desktop-icon:hover {
+    background-color: transparent;
+  }
+  
+  .desktop-icon.selected:hover {
+    background-color: rgba(0, 122, 255, 0.3);
+  }
+  
+  .traffic-light:hover {
+    opacity: 1;
+  }
+  
+  .dock-item:hover {
+    transform: none;
+  }
+  
+  /* Larger context menu items for touch */
+  .context-menu-item,
+  .dock-context-menu-item {
+    padding: 10px 16px;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .window {
+    border: 0.5px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .dock {
+    border: 0.5px solid rgba(255, 255, 255, 0.35);
+  }
+}
+
+/* Landscape Orientation on Mobile */
+@media (max-width: 767px) and (orientation: landscape) {
+  .desktop-icons {
+    grid-template-columns: repeat(auto-fill, 70px);
+    grid-template-rows: repeat(auto-fill, 80px);
+  }
+  
+  .dock {
+    gap: 3px;
+  }
+  
+  .window-titlebar {
+    height: 28px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .window {
+    transition: none;
+  }
+  
+  .dock-item-icon {
+    transition: none;
+  }
+  
+  .dock-item {
+    transition: none;
+  }
+}
+
+/* Dark Mode Support (future enhancement) */
+@media (prefers-color-scheme: dark) {
+  /* Keep current styling - desktop already uses dark theme */
+}
+
+/* Print Styles */
+@media print {
+  .menu-bar,
+  .dock,
+  .context-menu,
+  .dock-context-menu,
+  .resize-handle {
+    display: none !important;
+  }
+  
+  #desktop {
+    background: white !important;
+    padding: 0 !important;
+  }
+  
+  .desktop-icons {
+    position: static !important;
+  }
+  
+  .window {
+    position: static !important;
+    page-break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    margin-bottom: 20px;
+  }
+}
