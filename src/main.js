@@ -20,8 +20,8 @@ const desktopIcons = [
 function initDesktop() {
   const desktop = document.getElementById('desktop');
   
-  // Initialize menu bar first
-  initMenuBar(desktop);
+  // Initialize menu bar (must be first)
+  initMenuBar();
   
   // Create desktop icons container
   const iconsContainer = document.createElement('div');
@@ -38,8 +38,8 @@ function initDesktop() {
   // Initialize context menu
   initContextMenu(desktop, iconsContainer);
   
-  // Initialize dock bar
-  initDock(desktop, handleDockAppClick);
+  // Initialize dock
+  initDock();
   
   // Initialize interaction optimizations (animations, shortcuts, etc.)
   initInteractionOptimizer();
@@ -51,10 +51,16 @@ function createDesktopIcon(iconData) {
   icon.className = 'desktop-icon';
   icon.dataset.id = iconData.id;
   
-  icon.innerHTML = `
-    <div class="desktop-icon-image">${iconData.icon}</div>
-    <div class="desktop-icon-label">${iconData.name}</div>
-  `;
+  const iconImage = document.createElement('div');
+  iconImage.className = 'desktop-icon-image';
+  iconImage.textContent = iconData.icon;
+
+  const iconLabel = document.createElement('div');
+  iconLabel.className = 'desktop-icon-label';
+  iconLabel.textContent = iconData.name;
+
+  icon.appendChild(iconImage);
+  icon.appendChild(iconLabel);
   
   // Click to select
   icon.addEventListener('click', (e) => {
@@ -73,9 +79,23 @@ function createDesktopIcon(iconData) {
 
 // Open an icon (creates a window)
 function openIcon(iconData) {
+  const contentDiv = document.createElement('div');
+  contentDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+  
+  const iconEmoji = document.createElement('div');
+  iconEmoji.style.fontSize = '64px';
+  iconEmoji.textContent = iconData.icon;
+  
+  const nameText = document.createElement('div');
+  nameText.style.cssText = 'font-size:16px;color:#666;';
+  nameText.textContent = iconData.name;
+  
+  contentDiv.appendChild(iconEmoji);
+  contentDiv.appendChild(nameText);
+  
   createWindow({
     title: iconData.name,
-    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${iconData.icon}</div><div style="font-size:16px;color:#666;">${iconData.name}</div></div>`,
+    content: contentDiv,
   });
 }
 
@@ -155,15 +175,43 @@ function showDesktopContextMenu(e, menu) {
 // Show context menu for icon
 function showIconContextMenu(e, icon, menu) {
   const iconName = icon.querySelector('.desktop-icon-label').textContent;
+  const iconId = icon.dataset.id;
   
-  menu.innerHTML = `
-    <div class="context-menu-item" data-action="open">Open "${iconName}"</div>
-    <div class="context-menu-separator"></div>
-    <div class="context-menu-item" data-action="get-info">Get Info</div>
-    <div class="context-menu-item" data-action="rename">Rename</div>
-    <div class="context-menu-separator"></div>
-    <div class="context-menu-item" data-action="delete">Move to Trash</div>
-  `;
+  menu.innerHTML = '';
+  
+  const openItem = document.createElement('div');
+  openItem.className = 'context-menu-item';
+  openItem.dataset.action = 'open';
+  openItem.textContent = `Open "${iconName}"`;
+  
+  const sep1 = document.createElement('div');
+  sep1.className = 'context-menu-separator';
+  
+  const getInfo = document.createElement('div');
+  getInfo.className = 'context-menu-item';
+  getInfo.dataset.action = 'get-info';
+  getInfo.textContent = 'Get Info';
+  
+  const rename = document.createElement('div');
+  rename.className = 'context-menu-item';
+  rename.dataset.action = 'rename';
+  rename.textContent = 'Rename';
+  
+  const sep2 = document.createElement('div');
+  sep2.className = 'context-menu-separator';
+  
+  
+  const deleteItem = document.createElement('div');
+  deleteItem.className = 'context-menu-item';
+  deleteItem.dataset.action = 'delete';
+  deleteItem.textContent = 'Move to Trash';
+  
+  menu.appendChild(openItem);
+  menu.appendChild(sep1);
+  menu.appendChild(getInfo);
+  menu.appendChild(rename);
+  menu.appendChild(sep2);
+  menu.appendChild(deleteItem);
   
   positionContextMenu(e, menu);
   menu.classList.add('visible');
@@ -174,7 +222,7 @@ function showIconContextMenu(e, icon, menu) {
       e.stopPropagation();
       const action = item.dataset.action;
       if (action === 'open') {
-        const iconData = desktopIcons.find(i => i.name === iconName);
+        const iconData = desktopIcons.find(i => i.id === iconId);
         if (iconData) {
           openIcon(iconData);
         }
@@ -210,14 +258,30 @@ function hideContextMenu(menu) {
 function handleDockAppClick(appId, appData) {
   console.log(`Dock app clicked: ${appData.name}`);
   
+  const container = document.createElement('div');
+  container.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+  
+  const iconDiv = document.createElement('div');
+  iconDiv.style.fontSize = '64px';
+  iconDiv.textContent = appData.icon;
+  
+  const nameDiv = document.createElement('div');
+  nameDiv.style.fontSize = '16px';
+  nameDiv.style.color = '#666';
+  nameDiv.textContent = appData.name;
+  
+  const hintDiv = document.createElement('div');
+  hintDiv.style.cssText = 'font-size:14px;color:#999;margin-top:8px;';
+  hintDiv.textContent = 'App launched from Dock';
+  
+  container.appendChild(iconDiv);
+  container.appendChild(nameDiv);
+  container.appendChild(hintDiv);
+  
   // Create a window for the app
   createWindow({
     title: appData.name,
-    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;">
-      <div style="font-size:64px;">${appData.icon}</div>
-      <div style="font-size:16px;color:#666;">${appData.name}</div>
-      <div style="font-size:14px;color:#999;margin-top:8px;">App launched from Dock</div>
-    </div>`,
+    content: container,
   });
 }
 

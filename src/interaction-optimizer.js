@@ -204,10 +204,10 @@ function closeAllMenus() {
     menu.classList.remove('visible');
   });
 
-  // Close dropdown menus
-  const dropdowns = document.querySelectorAll('.dropdown-menu.visible');
+  // Close menu dropdowns (menu-bar uses display:none/block)
+  const dropdowns = document.querySelectorAll('.menu-dropdown');
   dropdowns.forEach(dropdown => {
-    dropdown.classList.remove('visible');
+    dropdown.style.display = 'none';
   });
 
   // Remove active state from menu items
@@ -302,14 +302,14 @@ function createRipple(event, element) {
  * Setup menu bar animations
  */
 function setupMenuAnimations() {
-  // Watch for dropdown menu visibility changes
+  // Watch for menu dropdown visibility changes (display style toggling)
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
         const target = mutation.target;
-        if (target.classList.contains('dropdown-menu') || 
+        if (target.classList.contains('menu-dropdown') ||
             target.classList.contains('dock-context-menu')) {
-          if (target.classList.contains('visible')) {
+          if (target.style.display === 'block') {
             target.classList.add('menu-animate-in');
           } else {
             target.classList.remove('menu-animate-in');
@@ -320,9 +320,9 @@ function setupMenuAnimations() {
   });
 
   // Observe all menus
-  const menus = document.querySelectorAll('.dropdown-menu, .dock-context-menu');
+  const menus = document.querySelectorAll('.menu-dropdown, .dock-context-menu');
   menus.forEach(menu => {
-    observer.observe(menu, { attributes: true, attributeFilter: ['class'] });
+    observer.observe(menu, { attributes: true, attributeFilter: ['style', 'class'] });
   });
 }
 

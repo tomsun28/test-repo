@@ -1,268 +1,321 @@
 // Dock Bar System
-// Bottom dock with app icons, magnification effect, and right-click context menu
+// macOS-style dock with magnification effect and context menus
 
 import './dock.css';
+import { createWindow } from './window-manager.js';
+import { createCalculator } from './apps/calculator.js';
+import { createTextEditor } from './apps/text-editor.js';
+import { createSettings } from './apps/settings.js';
 
-// Default dock applications
 const DEFAULT_APPS = [
-  { id: 'finder', name: 'Finder', icon: '🔍', category: 'app' },
-  { id: 'launchpad', name: 'Launchpad', icon: '🚀', category: 'app' },
-  { id: 'safari', name: 'Safari', icon: '🧭', category: 'app' },
-  { id: 'messages', name: 'Messages', icon: '💬', category: 'app' },
-  { id: 'mail', name: 'Mail', icon: '✉️', category: 'app' },
-  { id: 'maps', name: 'Maps', icon: '🗺️', category: 'app' },
-  { id: 'photos', name: 'Photos', icon: '📷', category: 'app' },
-  { id: 'music', name: 'Music', icon: '🎵', category: 'app' },
-  { id: 'notes', name: 'Notes', icon: '📝', category: 'app' },
-  { id: 'reminders', name: 'Reminders', icon: '✅', category: 'app' },
+  { id: 'finder', name: 'Finder', icon: '📁' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮' },
+  { id: 'text-editor', name: 'Text Editor', icon: '📝' },
+  { id: 'settings', name: 'System Settings', icon: '⚙️' },
+  { id: 'safari', name: 'Safari', icon: '🧭' },
+  { id: 'mail', name: 'Mail', icon: '📧' },
+  { id: 'maps', name: 'Maps', icon: '🗺️' },
+  { id: 'photos', name: 'Photos', icon: '🖼️' },
+  { id: 'messages', name: 'Messages', icon: '💬' },
+  { id: 'calendar', name: 'Calendar', icon: '📅' },
+  { id: 'notes', name: 'Notes', icon: '📝' },
+  { id: 'music', name: 'Music', icon: '🎵' },
 ];
 
-const RECENT_APPS = [
-  { id: 'calculator', name: 'Calculator', icon: '🧮', category: 'recent' },
-  { id: 'settings', name: 'Settings', icon: '⚙️', category: 'recent' },
-];
-
-const runningApps = new Set();
 let dockElement = null;
-let contextMenuElement = null;
+let dockItems = new Map();
+let runningApps = new Map(); // appId -> window handle
 
 /**
- * Initialize the dock bar.
- * @param {HTMLElement} container - The desktop container to append the dock to.
- * @param {Function} onAppClick - Callback when a dock app is clicked, receives (appId, appData).
+ * Initialize the dock bar
  */
-export function initDock(container, onAppClick) {
+export function initDock(apps = DEFAULT_APPS) {
+  if (dockElement) return;
+
   dockElement = document.createElement('div');
   dockElement.className = 'dock';
+  dockElement.id = 'dock';
 
-  // App section
-  DEFAULT_APPS.forEach((app) => {
-    dockElement.appendChild(createDockItem(app, onAppClick));
+  apps.forEach(app => {
+    const item = createDockItem(app);
+    dockElement.appendChild(item);
+    dockItems.set(app.id, item);
   });
 
-  // Separator
-  const sep = document.createElement('div');
-  sep.className = 'dock-separator';
-  dockElement.appendChild(sep);
+  // Add separator and trash
+  const separator = document.createElement('div');
+  separator.className = 'dock-separator';
+  dockElement.appendChild(separator);
 
-  // Recent / utility section
-  RECENT_APPS.forEach((app) => {
-    dockElement.appendChild(createDockItem(app, onAppClick));
-  });
+  const trash = createDockItem({ id: 'trash', name: 'Trash', icon: '🗑️' });
+  dockElement.appendChild(trash);
+  dockItems.set('trash', trash);
 
-  container.appendChild(dockElement);
-
-  // Prevent desktop context menu when right-clicking dock background
-  dockElement.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    hideDockContextMenu();
-  });
-
-  // Context menu
-  contextMenuElement = document.createElement('div');
-  contextMenuElement.className = 'dock-context-menu';
-  container.appendChild(contextMenuElement);
-
-  // Magnification effect
-  setupMagnification();
-
-  // Hide dock context menu on click anywhere
-  container.addEventListener('click', () => {
-    hideDockContextMenu();
-  });
+  document.getElementById('desktop').appendChild(dockElement);
+  setupDockMagnification();
 }
 
 /**
- * Create a dock item element.
+ * Create a dock item element
  */
-function createDockItem(app, onAppClick) {
+function createDockItem(app) {
   const item = document.createElement('div');
   item.className = 'dock-item';
   item.dataset.appId = app.id;
+  item.dataset.appName = app.name;
 
   const icon = document.createElement('div');
-  icon.className = 'dock-item-icon';
+  icon.className = 'dock-icon';
   icon.textContent = app.icon;
 
   const tooltip = document.createElement('div');
-  tooltip.className = 'dock-item-tooltip';
+  tooltip.className = 'dock-tooltip';
   tooltip.textContent = app.name;
 
-  const indicator = document.createElement('div');
-  indicator.className = 'dock-item-indicator';
-
-  item.appendChild(tooltip);
   item.appendChild(icon);
-  item.appendChild(indicator);
+  item.appendChild(tooltip);
 
-  // Click to launch / focus
+  // Click to open app
   item.addEventListener('click', (e) => {
     e.stopPropagation();
-    hideDockContextMenu();
-
-    // Bounce animation
-    item.classList.add('bouncing');
-    setTimeout(() => item.classList.remove('bouncing'), 500);
-
-    // Mark as running
-    runningApps.add(app.id);
-    item.classList.add('running');
-
-    if (typeof onAppClick === 'function') {
-      onAppClick(app.id, app);
-    }
+    handleDockItemClick(app);
   });
 
-  // Right-click context menu
+  // Right-click for context menu
   item.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     e.stopPropagation();
-    showDockContextMenu(e, app, item);
+    showDockItemContextMenu(e, app);
   });
 
   return item;
 }
 
 /**
- * Set up the magnification effect:
- * Hovered item gets magnified, adjacent items get partially magnified.
+ * Open an app by id - uses dedicated app content for known apps.
  */
-function setupMagnification() {
-  if (!dockElement) return;
+function openApp(app) {
+  let content;
+  switch (app.id) {
+    case 'calculator':
+      content = createCalculator();
+      break;
+    case 'text-editor':
+      content = createTextEditor();
+      break;
+    case 'settings':
+      content = createSettings();
+      break;
+    default:
+      content = createPlaceholderContent(app);
+  }
 
-  const items = dockElement.querySelectorAll('.dock-item');
+  const opts = {
+    title: app.name,
+    content,
+  };
 
-  items.forEach((item, index) => {
-    item.addEventListener('mouseenter', () => {
-      clearMagnification();
-      item.classList.add('magnified');
-      // Magnify neighbors
-      if (index > 0 && items[index - 1].classList.contains('dock-item')) {
-        items[index - 1].classList.add('magnified-neighbor');
+  // App-specific window options
+  if (app.id === 'calculator') {
+    opts.width = 320;
+    opts.height = 480;
+    opts.minWidth = 280;
+    opts.minHeight = 420;
+  } else if (app.id === 'settings') {
+    opts.width = 780;
+    opts.height = 520;
+    opts.minWidth = 600;
+    opts.minHeight = 400;
+  }
+
+  const item = dockItems.get(app.id);
+
+  // Track running app with onClose cleanup
+  opts.onClose = () => {
+    runningApps.delete(app.id);
+    if (item) {
+      item.classList.remove('running');
+    }
+  };
+
+  const windowHandle = createWindow(opts);
+
+  runningApps.set(app.id, windowHandle);
+  if (item) {
+    item.classList.add('running');
+  }
+}
+
+/**
+ * Handle dock item click
+ */
+function handleDockItemClick(app) {
+  console.log(`Opening app: ${app.name}`);
+
+  // Check if app is already running
+  if (runningApps.has(app.id)) {
+    const existingWindow = runningApps.get(app.id);
+    existingWindow.focus();
+    return;
+  }
+
+  // Bounce animation
+  const item = dockItems.get(app.id);
+  if (item) {
+    item.classList.add('bounce');
+    setTimeout(() => {
+      item.classList.remove('bounce');
+    }, 500);
+  }
+
+  openApp(app);
+}
+
+/**
+ * Create placeholder content for apps that don't have a dedicated implementation.
+ */
+function createPlaceholderContent(app) {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+
+  const icon = document.createElement('div');
+  icon.style.fontSize = '64px';
+  icon.textContent = app.icon;
+  wrap.appendChild(icon);
+
+  const name = document.createElement('div');
+  name.style.cssText = 'font-size:16px;color:#666;';
+  name.textContent = app.name;
+  wrap.appendChild(name);
+
+  return wrap;
+}
+
+/**
+ * Show context menu for dock item
+ */
+function showDockItemContextMenu(e, app) {
+  // Remove existing context menu
+  const existing = document.querySelector('.dock-context-menu');
+  if (existing) existing.remove();
+
+  const isRunning = runningApps.has(app.id);
+  const menu = document.createElement('div');
+  menu.className = 'dock-context-menu';
+
+  const openLabel = isRunning ? 'Show' : 'Open';
+  const quitOption = isRunning ? `
+    <div class="dock-context-menu-item" data-action="quit">Quit</div>
+    <div class="dock-context-menu-separator"></div>
+  ` : '';
+
+  menu.innerHTML = `
+    <div class="dock-context-menu-item" data-action="open">${openLabel}</div>
+    ${quitOption}
+    <div class="dock-context-menu-item" data-action="options">Options</div>
+    <div class="dock-context-menu-separator"></div>
+    <div class="dock-context-menu-item" data-action="show-in-finder">Show in Finder</div>
+    <div class="dock-context-menu-separator"></div>
+    <div class="dock-context-menu-item" data-action="remove">Remove from Dock</div>
+  `;
+
+  // Position menu
+  const x = e.clientX;
+  const y = e.clientY - 200; // Show above click position
+  menu.style.left = `${x}px`;
+  menu.style.top = `${Math.max(10, y)}px`;
+
+  document.body.appendChild(menu);
+
+  // Add event listeners
+  menu.querySelectorAll('.dock-context-menu-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = item.dataset.action;
+      console.log(`Dock context menu action: ${action} on ${app.name}`);
+      
+      if (action === 'open') {
+        handleDockItemClick(app);
+      } else if (action === 'quit') {
+        if (runningApps.has(app.id)) {
+          const windowHandle = runningApps.get(app.id);
+          windowHandle.close();
+        }
+      } else if (action === 'remove') {
+        removeDockItem(app.id);
       }
-      if (index < items.length - 1 && items[index + 1].classList.contains('dock-item')) {
-        items[index + 1].classList.add('magnified-neighbor');
-      }
+      
+      menu.remove();
     });
+  });
 
-    item.addEventListener('mouseleave', () => {
-      // Only clear if mouse has left the dock entirely (handled by dock mouseleave)
+  // Close menu on click outside
+  setTimeout(() => {
+    document.addEventListener('click', function closeMenu() {
+      menu.remove();
+      document.removeEventListener('click', closeMenu);
+    }, { once: true });
+  }, 0);
+}
+
+/**
+ * Remove an item from the dock
+ */
+export function removeDockItem(appId) {
+  const item = dockItems.get(appId);
+  if (item) {
+    item.classList.add('removing');
+    setTimeout(() => {
+      item.remove();
+      dockItems.delete(appId);
+    }, 300);
+  }
+}
+
+/**
+ * Add an item to the dock
+ */
+export function addDockItem(app) {
+  if (dockItems.has(app.id)) return;
+
+  const item = createDockItem(app);
+  const separator = dockElement.querySelector('.dock-separator');
+  dockElement.insertBefore(item, separator);
+  dockItems.set(app.id, item);
+}
+
+/**
+ * Setup magnification effect on hover
+ */
+function setupDockMagnification() {
+  const items = dockElement.querySelectorAll('.dock-item');
+  
+  dockElement.addEventListener('mousemove', (e) => {
+    items.forEach(item => {
+      const rect = item.getBoundingClientRect();
+      const itemCenter = rect.left + rect.width / 2;
+      const distance = Math.abs(e.clientX - itemCenter);
+      const maxDistance = 150;
+      
+      if (distance < maxDistance) {
+        const scale = 1 + (1 - distance / maxDistance) * 0.5; // Max 1.5x scale
+        item.style.transform = `scale(${scale})`;
+      } else {
+        item.style.transform = 'scale(1)';
+      }
     });
   });
 
   dockElement.addEventListener('mouseleave', () => {
-    clearMagnification();
-  });
-}
-
-function clearMagnification() {
-  if (!dockElement) return;
-  dockElement.querySelectorAll('.dock-item').forEach((item) => {
-    item.classList.remove('magnified', 'magnified-neighbor');
+    items.forEach(item => {
+      item.style.transform = 'scale(1)';
+    });
   });
 }
 
 /**
- * Show the dock context menu for an app.
+ * Get all dock apps
  */
-function showDockContextMenu(e, app, itemEl) {
-  hideDockContextMenu();
-
-  const isRunning = runningApps.has(app.id);
-
-  const menuItems = [
-    { label: 'Open', action: 'open' },
-    ...(isRunning ? [{ label: 'Options', action: 'options', submenu: true }] : []),
-    { separator: true },
-    { label: 'Show in Finder', action: 'show-in-finder' },
-    ...(isRunning
-      ? [
-          { separator: true },
-          { label: 'Quit', action: 'quit' },
-        ]
-      : []),
-    { separator: true },
-    { label: 'Options', action: 'options-menu', submenu: true },
-  ];
-
-  contextMenuElement.innerHTML = '';
-
-  menuItems.forEach((menuItem) => {
-    if (menuItem.separator) {
-      const sep = document.createElement('div');
-      sep.className = 'dock-context-menu-separator';
-      contextMenuElement.appendChild(sep);
-      return;
-    }
-
-    const el = document.createElement('div');
-    el.className = 'dock-context-menu-item';
-    el.textContent = menuItem.label;
-    el.dataset.action = menuItem.action;
-
-    el.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      handleDockMenuAction(menuItem.action, app);
-      hideDockContextMenu();
-    });
-
-    contextMenuElement.appendChild(el);
-  });
-
-  // Position the menu above the dock item
-  const itemRect = itemEl.getBoundingClientRect();
-  const menuWidth = 180;
-
-  let x = itemRect.left + itemRect.width / 2 - menuWidth / 2;
-  // Clamp to viewport
-  x = Math.max(8, Math.min(x, window.innerWidth - menuWidth - 8));
-  const y = itemRect.top - 8; // will be adjusted after measuring height
-
-  contextMenuElement.style.left = `${x}px`;
-  contextMenuElement.style.bottom = `${window.innerHeight - y}px`;
-  contextMenuElement.style.top = 'auto';
-  contextMenuElement.classList.add('visible');
-}
-
-function hideDockContextMenu() {
-  if (contextMenuElement) {
-    contextMenuElement.classList.remove('visible');
-  }
-}
-
-function handleDockMenuAction(action, app) {
-  switch (action) {
-    case 'open':
-      console.log(`Dock: Open ${app.name}`);
-      runningApps.add(app.id);
-      markAppRunning(app.id);
-      break;
-    case 'quit':
-      console.log(`Dock: Quit ${app.name}`);
-      runningApps.delete(app.id);
-      unmarkAppRunning(app.id);
-      break;
-    case 'show-in-finder':
-      console.log(`Dock: Show in Finder for ${app.name}`);
-      break;
-    case 'options':
-    case 'options-menu':
-      console.log(`Dock: Options for ${app.name}`);
-      break;
-    default:
-      console.log(`Dock: Unknown action ${action} for ${app.name}`);
-  }
-}
-
-function markAppRunning(appId) {
-  if (!dockElement) return;
-  const item = dockElement.querySelector(`[data-app-id="${appId}"]`);
-  if (item) item.classList.add('running');
-}
-
-function unmarkAppRunning(appId) {
-  if (!dockElement) return;
-  const item = dockElement.querySelector(`[data-app-id="${appId}"]`);
-  if (item) item.classList.remove('running');
+export function getDockApps() {
+  return Array.from(dockItems.keys());
 }
