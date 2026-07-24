@@ -111,3 +111,135 @@ body {
   background: rgba(255, 255, 255, 0.2);
   margin: 6px 0;
 }
+
+/* Window Management Styles */
+.mac-window {
+  position: absolute;
+  background: rgba(40, 40, 40, 0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.mac-window.active {
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 2px rgba(0, 122, 255, 0.5);
+}
+
+.window-titlebar {
+  height: 38px;
+  background: linear-gradient(to bottom, rgba(60, 60, 60, 0.95), rgba(50, 50, 50, 0.95));
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  cursor: move;
+  user-select: none;
+  position: relative;
+}
+
+.window-controls {
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.window-control {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.15s;
+}
+
+.window-control.close {
+  background: #ff5f57;
+}
+
+.window-control.minimize {
+  background: #ffbd2e;
+}
+
+.window-control.maximize {
+  background: #28c940;
+}
+
+.window-control:hover {
+  filter: brightness(1.2);
+}
+
+.mac-window:not(.active) .window-control {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.mac-window:not(.active) .window-control:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.window-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  pointer-events: none;
+}
+
+.mac-window:not(.active) .window-title {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.window-content {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.window-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: nwse-resize;
+  background: linear-gradient(135deg, transparent 0%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 100%);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.mac-window:hover .window-resize-handle {
+  opacity: 1;
+}
+
+/* Window animations */
+@keyframes windowClose {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes windowMinimize {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100px) scale(0.5);
+  }
+}

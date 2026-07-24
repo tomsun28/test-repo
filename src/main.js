@@ -1,6 +1,7 @@
 // Web macOS Desktop - Main Entry Point
 
 import './style.css';
+import { createWindow } from './windowManager.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -53,6 +54,22 @@ function createDesktopIcon(iconData) {
   icon.addEventListener('dblclick', (e) => {
     e.stopPropagation();
     console.log(`Opening ${iconData.name}`);
+    
+    // Create a demo window when double-clicking an icon
+    createWindow({
+      title: iconData.name,
+      width: 600,
+      height: 400,
+      content: `<div style="padding: 20px;">
+        <h2>Welcome to ${iconData.name}</h2>
+        <p>This is a demo window showing the window management system.</p>
+        <ul style="margin-top: 16px; padding-left: 20px;">
+          <li>Drag the titlebar to move</li>
+          <li>Resize from bottom-right corner</li>
+          <li>Use traffic light buttons to close, minimize, or maximize</li>
+        </ul>
+      </div>`
+    });
   });
   
   return icon;
