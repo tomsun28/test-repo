@@ -1,0 +1,378 @@
+/* Interaction Optimizer Styles */
+
+/* Toast notifications */
+.toast-container {
+  position: fixed;
+  top: 60px;
+  right: 20px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateX(400px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+
+.toast-show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast-hide {
+  opacity: 0;
+  transform: translateX(400px);
+}
+
+/* Ripple effect for dock items */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+.dock-item {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Menu animations */
+.dropdown-menu,
+.dock-context-menu {
+  transform-origin: top left;
+  opacity: 0;
+  transform: scale(0.95) translateY(-10px);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: none;
+}
+
+.dropdown-menu.visible,
+.dock-context-menu.visible {
+  display: block;
+  opacity: 1;
+  transform: scale(1) translateY(0);
+}
+
+.menu-animate-in {
+  animation: menu-pop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes menu-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Dock context menu positioning */
+.dock-context-menu {
+  transform-origin: bottom center;
+}
+
+.dock-context-menu.visible {
+  transform: scale(1) translateY(0);
+}
+
+/* Enhanced window transitions */
+.window {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Window minimize animation */
+.window.minimizing {
+  animation: window-minimize 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes window-minimize {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.1) translateY(100vh);
+    opacity: 0;
+  }
+}
+
+/* Window restore animation */
+.window.restoring {
+  animation: window-restore 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes window-restore {
+  0% {
+    transform: scale(0.1) translateY(100vh);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Window maximize animation */
+.window.maximizing {
+  animation: window-maximize 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes window-maximize {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Spotlight search overlay */
+.spotlight-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(10px);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 20vh;
+  animation: spotlight-fade-in 0.2s ease-out;
+}
+
+@keyframes spotlight-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spotlight-container {
+  width: 600px;
+  max-width: 90%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  animation: spotlight-scale-in 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes spotlight-scale-in {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.spotlight-input {
+  width: 100%;
+  padding: 20px 24px;
+  font-size: 24px;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+.spotlight-results {
+  max-height: 400px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.spotlight-result {
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.spotlight-result:hover,
+.spotlight-result.selected {
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.spotlight-result-icon {
+  font-size: 24px;
+}
+
+.spotlight-result-text {
+  flex: 1;
+}
+
+.spotlight-result-title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.spotlight-result-subtitle {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Window focus ring */
+.window.focused {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+              0 0 0 2px rgba(0, 122, 255, 0.3);
+}
+
+/* Desktop icon hover effects */
+.desktop-icon {
+  transition: transform 0.15s ease, background-color 0.2s ease;
+}
+
+.desktop-icon:hover {
+  transform: translateY(-2px);
+}
+
+.desktop-icon:active {
+  transform: translateY(0);
+}
+
+/* Context menu item hover */
+.context-menu-item,
+.dropdown-menu-item,
+.dock-context-menu-item {
+  transition: background-color 0.15s ease, padding-left 0.15s ease;
+}
+
+.context-menu-item:hover,
+.dropdown-menu-item:hover,
+.dock-context-menu-item:hover {
+  padding-left: 20px;
+}
+
+/* Smooth scrollbar for menus */
+.dropdown-menu,
+.dock-context-menu,
+.spotlight-results {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar,
+.dock-context-menu::-webkit-scrollbar,
+.spotlight-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track,
+.dock-context-menu::-webkit-scrollbar-track,
+.spotlight-results::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb,
+.dock-context-menu::-webkit-scrollbar-thumb,
+.spotlight-results::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover,
+.dock-context-menu::-webkit-scrollbar-thumb:hover,
+.spotlight-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Window switcher overlay */
+.window-switcher {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  z-index: 10000;
+  animation: switcher-fade-in 0.2s ease-out;
+}
+
+@keyframes switcher-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.window-switcher-item {
+  width: 120px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 10px;
+}
+
+.window-switcher-item:hover,
+.window-switcher-item.selected {
+  background: rgba(0, 122, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.window-switcher-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.window-switcher-title {
+  font-size: 12px;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}

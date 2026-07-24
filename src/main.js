@@ -4,6 +4,7 @@ import './style.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
 import { initMenuBar } from './menu-bar.js';
+import { initInteractionOptimizer } from './interaction-optimizer.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -39,6 +40,9 @@ function initDesktop() {
   
   // Initialize dock bar
   initDock(desktop, handleDockAppClick);
+  
+  // Initialize interaction optimizations (animations, shortcuts, etc.)
+  initInteractionOptimizer();
 }
 
 // Create desktop icon element
