@@ -167,10 +167,18 @@ export function openFinder(initialPath = '/') {
   sidebarItems.forEach(item => {
     const sidebarItem = document.createElement('div');
     sidebarItem.className = 'finder-sidebar-item';
-    sidebarItem.innerHTML = `
-      <span class="sidebar-icon">${item.icon}</span>
-      <span class="sidebar-name">${item.name}</span>
-    `;
+    
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'sidebar-icon';
+    iconSpan.textContent = item.icon;
+    
+    const nameSpan = document.createElement('span');
+    nameSpan.className = 'sidebar-name';
+    nameSpan.textContent = item.name;
+    
+    sidebarItem.appendChild(iconSpan);
+    sidebarItem.appendChild(nameSpan);
+    
     sidebarItem.addEventListener('click', () => {
       navigateTo(item.path);
     });
@@ -190,7 +198,7 @@ export function openFinder(initialPath = '/') {
   
   const backBtn = document.createElement('button');
   backBtn.className = 'finder-nav-btn';
-  backBtn.innerHTML = '◀';
+  backBtn.textContent = '◀';
   backBtn.title = 'Back';
   backBtn.disabled = true;
   backBtn.addEventListener('click', () => {
@@ -203,7 +211,7 @@ export function openFinder(initialPath = '/') {
   
   const forwardBtn = document.createElement('button');
   forwardBtn.className = 'finder-nav-btn';
-  forwardBtn.innerHTML = '▶';
+  forwardBtn.textContent = '▶';
   forwardBtn.title = 'Forward';
   forwardBtn.disabled = true;
   forwardBtn.addEventListener('click', () => {
@@ -226,7 +234,7 @@ export function openFinder(initialPath = '/') {
   
   const gridBtn = document.createElement('button');
   gridBtn.className = 'finder-view-btn active';
-  gridBtn.innerHTML = '⊞';
+  gridBtn.textContent = '⊞';
   gridBtn.title = 'Grid View';
   gridBtn.addEventListener('click', () => {
     viewMode = 'grid';
@@ -237,7 +245,7 @@ export function openFinder(initialPath = '/') {
   
   const listBtn = document.createElement('button');
   listBtn.className = 'finder-view-btn';
-  listBtn.innerHTML = '☰';
+  listBtn.textContent = '☰';
   listBtn.title = 'List View';
   listBtn.addEventListener('click', () => {
     viewMode = 'list';
@@ -282,7 +290,11 @@ export function openFinder(initialPath = '/') {
     const node = navigateToPath(currentPath);
     
     if (!node || node.type !== 'folder') {
-      contentView.innerHTML = '<div class="finder-empty">Folder not found</div>';
+      contentView.textContent = '';
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'finder-empty';
+      emptyDiv.textContent = 'Folder not found';
+      contentView.appendChild(emptyDiv);
       return;
     }
     
@@ -304,13 +316,19 @@ export function openFinder(initialPath = '/') {
     }
     
     // Clear content
-    contentView.innerHTML = '';
+    while (contentView.firstChild) {
+      contentView.removeChild(contentView.firstChild);
+    }
     
     const children = node.children || {};
     const items = Object.entries(children);
     
     if (items.length === 0) {
-      contentView.innerHTML = '<div class="finder-empty">This folder is empty</div>';
+      contentView.textContent = '';
+      const emptyDiv = document.createElement('div');
+      emptyDiv.className = 'finder-empty';
+      emptyDiv.textContent = 'This folder is empty';
+      contentView.appendChild(emptyDiv);
       return;
     }
     
@@ -341,10 +359,18 @@ export function openFinder(initialPath = '/') {
     items.forEach(([name, data]) => {
       const item = document.createElement('div');
       item.className = 'finder-grid-item';
-      item.innerHTML = `
-        <div class="finder-item-icon">${getFileIcon(name, data.type)}</div>
-        <div class="finder-item-name" title="${name}">${name}</div>
-      `;
+      
+      const iconDiv = document.createElement('div');
+      iconDiv.className = 'finder-item-icon';
+      iconDiv.textContent = getFileIcon(name, data.type);
+      
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'finder-item-name';
+      nameDiv.title = name;
+      nameDiv.textContent = name;
+      
+      item.appendChild(iconDiv);
+      item.appendChild(nameDiv);
       
       item.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -375,24 +401,46 @@ export function openFinder(initialPath = '/') {
     // Header
     const header = document.createElement('div');
     header.className = 'finder-list-header';
-    header.innerHTML = `
-      <div class="finder-list-col name">Name</div>
-      <div class="finder-list-col modified">Date Modified</div>
-      <div class="finder-list-col size">Size</div>
-    `;
+    const hName = document.createElement('div');
+    hName.className = 'finder-list-col name';
+    hName.textContent = 'Name';
+    const hMod = document.createElement('div');
+    hMod.className = 'finder-list-col modified';
+    hMod.textContent = 'Date Modified';
+    const hSize = document.createElement('div');
+    hSize.className = 'finder-list-col size';
+    hSize.textContent = 'Size';
+    header.appendChild(hName);
+    header.appendChild(hMod);
+    header.appendChild(hSize);
     list.appendChild(header);
     
     items.forEach(([name, data]) => {
       const item = document.createElement('div');
       item.className = 'finder-list-item';
-      item.innerHTML = `
-        <div class="finder-list-col name">
-          <span class="finder-item-icon">${getFileIcon(name, data.type)}</span>
-          <span class="finder-item-name">${name}</span>
-        </div>
-        <div class="finder-list-col modified">${data.modified || '--'}</div>
-        <div class="finder-list-col size">${data.size || '--'}</div>
-      `;
+      
+      const nameCol = document.createElement('div');
+      nameCol.className = 'finder-list-col name';
+      const iconSpan = document.createElement('span');
+      iconSpan.className = 'finder-item-icon';
+      iconSpan.textContent = getFileIcon(name, data.type);
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'finder-item-name';
+      nameSpan.textContent = name;
+      nameCol.appendChild(iconSpan);
+      nameCol.appendChild(nameSpan);
+      
+      const modCol = document.createElement('div');
+      modCol.className = 'finder-list-col modified';
+      modCol.textContent = data.modified || '--';
+      
+      const sizeCol = document.createElement('div');
+      sizeCol.className = 'finder-list-col size';
+      sizeCol.textContent = data.size || '--';
+      
+      item.appendChild(nameCol);
+      item.appendChild(modCol);
+      item.appendChild(sizeCol);
       
       item.addEventListener('click', (e) => {
         e.stopPropagation();
