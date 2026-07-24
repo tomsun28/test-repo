@@ -1,0 +1,77 @@
+.text-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+}
+
+.editor-toolbar {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  align-items: center;
+}
+
+.editor-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+
+.editor-btn:hover {
+  background: #e0e0e0;
+  border-color: #ccc;
+}
+
+.editor-btn.active {
+  background: #007aff;
+  color: white;
+  border-color: #0051d5;
+}
+
+.toolbar-separator {
+  width: 1px;
+  height: 24px;
+  background: #ccc;
+  margin: 0 8px;
+}
+
+.font-size-select {
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.editor-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  font-size: 16px;
+  line-height: 1.6;
+  outline: none;
+  color: #333;
+}
+
+.editor-content:empty::before {
+  content: attr(placeholder);
+  color: #999;
+}
+
+.editor-statusbar {
+  padding: 6px 12px;
+  background: #f9f9f9;
+  border-top: 1px solid #ddd;
+  font-size: 12px;
+  color: #666;
+}

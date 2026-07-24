@@ -3,6 +3,9 @@
 
 import './dock.css';
 import { createWindow } from './window-manager.js';
+import { createCalculator } from './apps/calculator.js';
+import { createTextEditor } from './apps/text-editor.js';
+import { createSettings } from './apps/settings.js';
 
 const DEFAULT_APPS = [
   { id: 'finder', name: 'Finder', icon: '📁' },
@@ -14,8 +17,35 @@ const DEFAULT_APPS = [
   { id: 'calendar', name: 'Calendar', icon: '📅' },
   { id: 'notes', name: 'Notes', icon: '📝' },
   { id: 'music', name: 'Music', icon: '🎵' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮' },
+  { id: 'textedit', name: 'TextEdit', icon: '📄' },
   { id: 'settings', name: 'System Settings', icon: '⚙️' },
 ];
+
+// App launchers that return content elements
+const APP_LAUNCHERS = {
+  calculator: {
+    width: 320,
+    height: 480,
+    minWidth: 280,
+    minHeight: 420,
+    build: createCalculator,
+  },
+  textedit: {
+    width: 640,
+    height: 480,
+    minWidth: 400,
+    minHeight: 300,
+    build: createTextEditor,
+  },
+  settings: {
+    width: 720,
+    height: 500,
+    minWidth: 520,
+    minHeight: 360,
+    build: createSettings,
+  },
+};
 
 let dockElement = null;
 let dockItems = new Map();
@@ -109,9 +139,9 @@ function handleDockItemClick(app) {
   }
 
   // Create window for the app with onClose callback
-  const windowHandle = createWindow({
+  const launcher = APP_LAUNCHERS[app.id];
+  let windowOptions = {
     title: app.name,
-    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`,
     onClose: () => {
       // Remove running indicator when window closes
       runningApps.delete(app.id);
@@ -119,7 +149,22 @@ function handleDockItemClick(app) {
         item.classList.remove('running');
       }
     },
-  });
+  };
+
+  if (launcher) {
+    // Real app with custom content
+    const content = launcher.build();
+    windowOptions.content = content;
+    windowOptions.width = launcher.width;
+    windowOptions.height = launcher.height;
+    windowOptions.minWidth = launcher.minWidth;
+    windowOptions.minHeight = launcher.minHeight;
+  } else {
+    // Placeholder for unimplemented apps
+    windowOptions.content = `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`;
+  }
+
+  const windowHandle = createWindow(windowOptions);
   
   // Track the running app
   runningApps.set(app.id, windowHandle);
