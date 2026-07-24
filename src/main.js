@@ -1,6 +1,7 @@
 // Web macOS Desktop - Main Entry Point
 
 import './style.css';
+import './responsive.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
 import { initMenuBar } from './menu-bar.js';
@@ -303,6 +304,48 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initDesktop);
 } else {
   initDesktop();
+}
+
+// Mobile-specific enhancements
+function isMobile() {
+  return window.innerWidth <= 768;
+}
+
+// Prevent default touch behaviors that interfere with the app
+document.addEventListener('touchmove', (e) => {
+  // Allow scrolling in textareas and scrollable content
+  if (e.target.tagName === 'TEXTAREA' || e.target.closest('.window-content')) {
+    return;
+  }
+  // Prevent pull-to-refresh and other browser gestures
+  if (e.touches.length > 1) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+// Prevent double-tap zoom on interactive elements
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (e) => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    e.preventDefault();
+  }
+  lastTouchEnd = now;
+}, { passive: false });
+
+// Handle orientation change
+window.addEventListener('orientationchange', () => {
+  setTimeout(() => {
+    // Force layout recalculation
+    document.body.style.display = 'none';
+    document.body.offsetHeight;
+    document.body.style.display = '';
+  }, 100);
+});
+
+// Add mobile class to body for additional styling hooks
+if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+  document.body.classList.add('touch-device');
 }
 
 // TODO: Implement menu bar
