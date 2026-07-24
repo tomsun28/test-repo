@@ -3,6 +3,7 @@
 
 import './dock.css';
 import { createWindow } from './window-manager.js';
+import { openFinder } from './finder.js';
 
 const DEFAULT_APPS = [
   { id: 'finder', name: 'Finder', icon: '📁' },
@@ -98,6 +99,12 @@ function handleDockItemClick(app) {
     setTimeout(() => {
       item.classList.remove('bounce');
     }, 500);
+  }
+
+  // Special handling for Finder
+  if (app.id === 'finder') {
+    openFinder();
+    return;
   }
 
   // Create window for the app

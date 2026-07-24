@@ -3,6 +3,7 @@
 import './style.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
+import { openFinder } from './finder.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -71,6 +72,12 @@ function createDesktopIcon(iconData) {
 
 // Open an icon (creates a window)
 function openIcon(iconData) {
+  // Folder icons open Finder
+  if (iconData.id === 'macintosh-hd' || iconData.id === 'documents' || iconData.id === 'downloads' || iconData.id === 'applications') {
+    openFinder();
+    return;
+  }
+
   const contentDiv = document.createElement('div');
   contentDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
   
