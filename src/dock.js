@@ -6,6 +6,7 @@ import { createWindow } from './window-manager.js';
 import { createCalculator } from './apps/calculator.js';
 import { createTextEditor } from './apps/text-editor.js';
 import { createSettings } from './apps/settings.js';
+import { openFinder } from './finder.js';
 
 const DEFAULT_APPS = [
   { id: 'finder', name: 'Finder', icon: '📁' },

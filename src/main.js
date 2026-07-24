@@ -4,6 +4,7 @@ import './style.css';
 import { createWindow } from './window-manager.js';
 import { initDock } from './dock.js';
 import { initMenuBar } from './menu-bar.js';
+import { openFinder } from './finder.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -75,24 +76,39 @@ function createDesktopIcon(iconData) {
 
 // Open an icon (creates a window)
 function openIcon(iconData) {
-  const contentDiv = document.createElement('div');
-  contentDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
-  
-  const iconEmoji = document.createElement('div');
-  iconEmoji.style.fontSize = '64px';
-  iconEmoji.textContent = iconData.icon;
-  
-  const nameText = document.createElement('div');
-  nameText.style.cssText = 'font-size:16px;color:#666;';
-  nameText.textContent = iconData.name;
-  
-  contentDiv.appendChild(iconEmoji);
-  contentDiv.appendChild(nameText);
-  
-  createWindow({
-    title: iconData.name,
-    content: contentDiv,
-  });
+  // Map desktop icons to Finder paths
+  const iconPaths = {
+    'macintosh-hd': '/',
+    'documents': '/Documents',
+    'downloads': '/Downloads',
+    'applications': '/Applications',
+  };
+
+  const path = iconPaths[iconData.id];
+  if (path) {
+    // Open Finder for folder icons
+    openFinder(path);
+  } else {
+    // Fallback: create a generic window
+    const contentDiv = document.createElement('div');
+    contentDiv.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+    
+    const iconEmoji = document.createElement('div');
+    iconEmoji.style.fontSize = '64px';
+    iconEmoji.textContent = iconData.icon;
+    
+    const nameText = document.createElement('div');
+    nameText.style.cssText = 'font-size:16px;color:#666;';
+    nameText.textContent = iconData.name;
+    
+    contentDiv.appendChild(iconEmoji);
+    contentDiv.appendChild(nameText);
+    
+    createWindow({
+      title: iconData.name,
+      content: contentDiv,
+    });
+  }
 }
 
 // Select desktop icon
