@@ -12,9 +12,17 @@
 }
 
 .window.minimized {
-  transform: scale(0.1);
+  transform: scale(0.1) translateY(100vh);
   opacity: 0;
   pointer-events: none;
+}
+
+/* Keep minimized windows visible for restoration until dock integration */
+.window.minimized.restorable {
+  transform: scale(0.1);
+  opacity: 0.5;
+  pointer-events: auto;
+  cursor: pointer;
 }
 
 .window.maximized {
