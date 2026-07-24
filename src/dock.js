@@ -19,6 +19,7 @@ const DEFAULT_APPS = [
 
 let dockElement = null;
 let dockItems = new Map();
+let runningApps = new Map(); // appId -> window handle
 
 /**
  * Initialize the dock bar
@@ -91,6 +92,13 @@ function createDockItem(app) {
 function handleDockItemClick(app) {
   console.log(`Opening app: ${app.name}`);
   
+  // Check if app is already running
+  if (runningApps.has(app.id)) {
+    const existingWindow = runningApps.get(app.id);
+    existingWindow.focus();
+    return;
+  }
+  
   // Bounce animation
   const item = dockItems.get(app.id);
   if (item) {
@@ -100,11 +108,24 @@ function handleDockItemClick(app) {
     }, 500);
   }
 
-  // Create window for the app
-  createWindow({
+  // Create window for the app with onClose callback
+  const windowHandle = createWindow({
     title: app.name,
     content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`,
+    onClose: () => {
+      // Remove running indicator when window closes
+      runningApps.delete(app.id);
+      if (item) {
+        item.classList.remove('running');
+      }
+    },
   });
+  
+  // Track the running app
+  runningApps.set(app.id, windowHandle);
+  if (item) {
+    item.classList.add('running');
+  }
 }
 
 /**
@@ -115,11 +136,19 @@ function showDockItemContextMenu(e, app) {
   const existing = document.querySelector('.dock-context-menu');
   if (existing) existing.remove();
 
+  const isRunning = runningApps.has(app.id);
   const menu = document.createElement('div');
   menu.className = 'dock-context-menu';
 
+  const openLabel = isRunning ? 'Show' : 'Open';
+  const quitOption = isRunning ? `
+    <div class="dock-context-menu-item" data-action="quit">Quit</div>
+    <div class="dock-context-menu-separator"></div>
+  ` : '';
+
   menu.innerHTML = `
-    <div class="dock-context-menu-item" data-action="open">Open</div>
+    <div class="dock-context-menu-item" data-action="open">${openLabel}</div>
+    ${quitOption}
     <div class="dock-context-menu-item" data-action="options">Options</div>
     <div class="dock-context-menu-separator"></div>
     <div class="dock-context-menu-item" data-action="show-in-finder">Show in Finder</div>
@@ -144,6 +173,11 @@ function showDockItemContextMenu(e, app) {
       
       if (action === 'open') {
         handleDockItemClick(app);
+      } else if (action === 'quit') {
+        if (runningApps.has(app.id)) {
+          const windowHandle = runningApps.get(app.id);
+          windowHandle.close();
+        }
       } else if (action === 'remove') {
         removeDockItem(app.id);
       }
