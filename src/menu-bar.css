@@ -13,7 +13,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 8px;
-  z-index: 9999;
+  z-index: 10001;
   font-size: 13px;
   user-select: none;
 }
@@ -49,75 +49,73 @@
   color: #000;
 }
 
-.menu-item[data-menu="apple"] .menu-label {
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.menu-dropdown {
+/* Dropdown menu */
+.dropdown-menu {
   position: absolute;
   top: 100%;
   left: 0;
-  min-width: 240px;
-  background: rgba(255, 255, 255, 0.95);
+  margin-top: 2px;
+  background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 6px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   padding: 4px 0;
-  margin-top: 2px;
+  min-width: 200px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: none;
+  z-index: 10002;
 }
 
-.menu-dropdown-item {
-  padding: 4px 16px;
+.dropdown-menu.visible {
+  display: block;
+}
+
+.dropdown-item {
+  padding: 6px 16px;
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   transition: background-color 0.1s;
-  color: #000;
 }
 
-.menu-dropdown-item:hover {
-  background: #0066cc;
+.dropdown-item:hover {
+  background: rgba(0, 122, 255, 0.9);
   color: white;
 }
 
-.menu-dropdown-item:hover .menu-shortcut {
-  color: rgba(255, 255, 255, 0.9);
+.dropdown-item:hover .shortcut {
+  color: rgba(255, 255, 255, 0.8);
 }
 
-.menu-shortcut {
-  color: rgba(0, 0, 0, 0.5);
-  font-size: 12px;
-  margin-left: 24px;
+.dropdown-item.disabled {
+  color: rgba(0, 0, 0, 0.3);
+  cursor: default;
 }
 
-.menu-separator {
+.dropdown-item.disabled:hover {
+  background: transparent;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-separator {
   height: 1px;
   background: rgba(0, 0, 0, 0.1);
   margin: 4px 0;
 }
 
-.menu-dropdown-item.has-submenu {
-  position: relative;
+.shortcut {
+  color: rgba(0, 0, 0, 0.5);
+  font-size: 12px;
+  margin-left: 24px;
 }
 
-.submenu-arrow {
-  font-size: 10px;
-  margin-left: 8px;
-}
-
+/* Status icons */
 .status-icon {
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-
-.status-icon:hover {
-  opacity: 0.7;
+  cursor: default;
 }
 
 .status-time {
-  font-weight: 500;
   cursor: default;
+  font-variant-numeric: tabular-nums;
 }
