@@ -3,11 +3,14 @@
 
 import './dock.css';
 import { createWindow } from './window-manager.js';
+import { getApp, createAppContent, getAppWindowOptions } from './apps/index.js';
 
 const DEFAULT_APPS = [
   { id: 'finder', name: 'Finder', icon: '📁' },
   { id: 'safari', name: 'Safari', icon: '🧭' },
   { id: 'mail', name: 'Mail', icon: '📧' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮' },
+  { id: 'text-editor', name: 'Text Editor', icon: '✏️' },
   { id: 'maps', name: 'Maps', icon: '🗺️' },
   { id: 'photos', name: 'Photos', icon: '🖼️' },
   { id: 'messages', name: 'Messages', icon: '💬' },
@@ -108,10 +111,25 @@ function handleDockItemClick(app) {
     }, 500);
   }
 
+  // Check if this is a registered app
+  const appInfo = getApp(app.id);
+  let windowContent;
+  let windowOptions = {};
+
+  if (appInfo) {
+    // Use the app registry to create content
+    windowContent = createAppContent(app.id);
+    windowOptions = getAppWindowOptions(app.id);
+  } else {
+    // Fallback for unregistered apps
+    windowContent = `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`;
+  }
+
   // Create window for the app with onClose callback
   const windowHandle = createWindow({
     title: app.name,
-    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${app.icon}</div><div style="font-size:16px;color:#666;">${app.name}</div></div>`,
+    content: windowContent,
+    ...windowOptions,
     onClose: () => {
       // Remove running indicator when window closes
       runningApps.delete(app.id);
