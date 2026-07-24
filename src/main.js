@@ -1,6 +1,7 @@
 // Web macOS Desktop - Main Entry Point
 
 import './style.css';
+import { createWindow } from './window-manager.js';
 
 console.log('Web macOS Desktop initialized');
 
@@ -52,10 +53,18 @@ function createDesktopIcon(iconData) {
   // Double click to open
   icon.addEventListener('dblclick', (e) => {
     e.stopPropagation();
-    console.log(`Opening ${iconData.name}`);
+    openIcon(iconData);
   });
   
   return icon;
+}
+
+// Open an icon (creates a window)
+function openIcon(iconData) {
+  createWindow({
+    title: iconData.name,
+    content: `<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;"><div style="font-size:64px;">${iconData.icon}</div><div style="font-size:16px;color:#666;">${iconData.name}</div></div>`,
+  });
 }
 
 // Select desktop icon
@@ -152,7 +161,14 @@ function showIconContextMenu(e, icon, menu) {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
       const action = item.dataset.action;
-      console.log(`Icon context menu action: ${action} on ${iconName}`);
+      if (action === 'open') {
+        const iconData = desktopIcons.find(i => i.name === iconName);
+        if (iconData) {
+          openIcon(iconData);
+        }
+      } else {
+        console.log(`Icon context menu action: ${action} on ${iconName}`);
+      }
       hideContextMenu(menu);
     });
   });
