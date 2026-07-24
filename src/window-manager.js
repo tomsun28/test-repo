@@ -88,6 +88,9 @@ export function focusWindow(id) {
 
 /**
  * Minimize a window.
+ * Note: Currently keeps window visible but marked as minimized.
+ * A proper restore mechanism (dock/taskbar integration) should be implemented
+ * before hiding minimized windows.
  */
 export function minimizeWindow(id) {
   const win = windows.get(id);
@@ -168,6 +171,14 @@ export function closeWindow(id) {
 
   if (typeof win.onClose === 'function') {
     win.onClose();
+  }
+
+  // Remove document-level event listeners to prevent memory leaks
+  if (win._listeners) {
+    win._listeners.forEach(({ target, type, handler }) => {
+      target.removeEventListener(type, handler);
+    });
+    win._listeners = null;
   }
 
   win.element.remove();
@@ -335,18 +346,28 @@ function setupDrag(win, titlebar) {
     e.preventDefault();
   });
 
-  document.addEventListener('mousemove', (e) => {
+  const onMouseMove = (e) => {
     if (!dragging) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
     const newX = origX + dx;
     const newY = Math.max(0, origY + dy); // don't go above screen top
     applyGeometry(win, newX, newY, win.width, win.height);
-  });
+  };
 
-  document.addEventListener('mouseup', () => {
+  const onMouseUp = () => {
     dragging = false;
-  });
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  // Store references for cleanup
+  if (!win._listeners) win._listeners = [];
+  win._listeners.push(
+    { target: document, type: 'mousemove', handler: onMouseMove },
+    { target: document, type: 'mouseup', handler: onMouseUp },
+  );
 }
 
 // ---- Resize Behavior ----
@@ -368,7 +389,7 @@ function setupResize(win, handle, direction) {
     e.stopPropagation();
   });
 
-  document.addEventListener('mousemove', (e) => {
+  const onMouseMove = (e) => {
     if (!resizing) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
@@ -409,9 +430,19 @@ function setupResize(win, handle, direction) {
     }
 
     applyGeometry(win, newX, newY, newW, newH);
-  });
+  };
 
-  document.addEventListener('mouseup', () => {
+  const onMouseUp = () => {
     resizing = false;
-  });
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+  // Store references for cleanup
+  if (!win._listeners) win._listeners = [];
+  win._listeners.push(
+    { target: document, type: 'mousemove', handler: onMouseMove },
+    { target: document, type: 'mouseup', handler: onMouseUp },
+  );
 }

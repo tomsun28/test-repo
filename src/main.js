@@ -248,6 +248,37 @@ function hideContextMenu(menu) {
   menu.classList.remove('visible');
 }
 
+// Handle dock app clicks
+function handleDockAppClick(appId, appData) {
+  console.log(`Dock app clicked: ${appData.name}`);
+  
+  const container = document.createElement('div');
+  container.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:12px;';
+  
+  const iconDiv = document.createElement('div');
+  iconDiv.style.fontSize = '64px';
+  iconDiv.textContent = appData.icon;
+  
+  const nameDiv = document.createElement('div');
+  nameDiv.style.fontSize = '16px';
+  nameDiv.style.color = '#666';
+  nameDiv.textContent = appData.name;
+  
+  const hintDiv = document.createElement('div');
+  hintDiv.style.cssText = 'font-size:14px;color:#999;margin-top:8px;';
+  hintDiv.textContent = 'App launched from Dock';
+  
+  container.appendChild(iconDiv);
+  container.appendChild(nameDiv);
+  container.appendChild(hintDiv);
+  
+  // Create a window for the app
+  createWindow({
+    title: appData.name,
+    content: container,
+  });
+}
+
 // Initialize on DOM ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initDesktop);
