@@ -48,7 +48,7 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Courier New', Courier, monospace;
   overflow: hidden;
   width: 100vw;
   height: 100vh;
@@ -57,7 +57,15 @@ body {
 #desktop {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #667eea 100%);
+  background-color: #f4e4c1;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(139, 111, 71, 0.03) 2px,
+      rgba(139, 111, 71, 0.03) 4px
+    );
   position: relative;
   padding: 44px 20px 20px 20px;
   overflow: hidden;
@@ -85,19 +93,21 @@ body {
   width: 90px;
   height: 100px;
   padding: 10px;
-  border-radius: 8px;
+  border: 2px solid transparent;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.2s;
+  transition: all 0.1s;
 }
 
 .desktop-icon:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(139, 111, 71, 0.1);
+  border-color: rgba(139, 111, 71, 0.3);
 }
 
 .desktop-icon.selected {
-  background-color: rgba(0, 122, 255, 0.3);
-  border: 2px solid rgba(0, 122, 255, 0.6);
+  background-color: rgba(160, 82, 45, 0.2);
+  border: 2px solid #8b6f47;
+  box-shadow: 2px 2px 0px rgba(61, 40, 23, 0.3);
 }
 
 .desktop-icon-image {
@@ -112,25 +122,24 @@ body {
 
 .desktop-icon-label {
   font-size: 12px;
-  color: white;
+  color: #3d2817;
   text-align: center;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   word-wrap: break-word;
   max-width: 80px;
   line-height: 1.2;
+  font-weight: 500;
 }
 
 .context-menu {
   position: absolute;
-  background: rgba(40, 40, 40, 0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  background: #f4e4c1;
+  border: 2px solid #8b6f47;
   padding: 6px 0;
   min-width: 180px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 4px 0px rgba(61, 40, 23, 0.3);
   z-index: 10000;
   display: none;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .context-menu.visible {
@@ -139,20 +148,23 @@ body {
 
 .context-menu-item {
   padding: 8px 16px;
-  color: white;
+  color: #3d2817;
   font-size: 13px;
   cursor: pointer;
-  transition: background-color 0.15s;
+  transition: background-color 0.1s;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .context-menu-item:hover {
-  background-color: rgba(0, 122, 255, 0.8);
+  background-color: rgba(160, 82, 45, 0.2);
+  color: #8b6f47;
 }
 
 .context-menu-separator {
-  height: 1px;
-  background: rgba(255, 255, 255, 0.2);
+  height: 2px;
+  background: #8b6f47;
   margin: 6px 0;
+  opacity: 0.3;
 }
 
 /* Import responsive design styles */
