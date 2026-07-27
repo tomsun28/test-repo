@@ -1,10 +1,10 @@
-/* Window Management System Styles */
+/* Window Management System Styles - Retro Theme */
 
 .window {
   position: absolute;
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: 10px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  background: #f4e8c1;
+  border: 3px solid #8b6f47;
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -26,37 +26,35 @@
 }
 
 .window.maximized {
-  border-radius: 0;
   transition: all 0.2s ease-out;
 }
 
 .window-titlebar {
-  height: 38px;
-  background: linear-gradient(to bottom, #f6f6f6 0%, #e6e6e6 100%);
-  border-bottom: 1px solid #c8c8c8;
+  height: 32px;
+  background: #d4a574;
+  border-bottom: 2px solid #8b6f47;
   display: flex;
   align-items: center;
-  padding: 0 12px;
+  padding: 0 8px;
   cursor: default;
   user-select: none;
   flex-shrink: 0;
 }
 
 .window:not(.focused) .window-titlebar {
-  background: linear-gradient(to bottom, #f0f0f0 0%, #d8d8d8 100%);
+  background: #c9b896;
 }
 
 .traffic-lights {
   display: flex;
-  gap: 8px;
-  margin-right: 12px;
+  gap: 6px;
+  margin-right: 8px;
 }
 
 .traffic-light {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #3d2f1f;
   cursor: pointer;
   background: var(--light-color);
   position: relative;
@@ -64,37 +62,42 @@
   transition: opacity 0.15s;
 }
 
-.traffic-light:hover {
-  opacity: 0.8;
+.traffic-light.close {
+  background: #c94c4c;
 }
 
-.traffic-light::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.2);
+.traffic-light.minimize {
+  background: #f2b736;
+}
+
+.traffic-light.maximize {
+  background: #6b8e23;
+}
+
+.traffic-light:hover {
+  opacity: 0.8;
 }
 
 .window-title {
   flex: 1;
   text-align: center;
+  font-family: 'Courier New', monospace;
   font-size: 13px;
-  font-weight: 500;
-  color: #333;
+  font-weight: 700;
+  color: #3d2f1f;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .window:not(.focused) .window-title {
-  color: #999;
+  color: #8b7355;
 }
 
 .window-content {
   flex: 1;
   overflow: auto;
-  background: white;
+  background: #f4e8c1;
   padding: 16px;
 }
 
@@ -171,24 +174,19 @@
 /* ===== Responsive Window Manager ===== */
 
 @media (max-width: 768px) {
-  .window {
-    border-radius: 8px;
-    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.1);
-  }
-
   .window-titlebar {
-    height: 36px;
-    padding: 0 10px;
+    height: 30px;
+    padding: 0 6px;
   }
 
   .traffic-light {
-    width: 11px;
-    height: 11px;
+    width: 12px;
+    height: 12px;
   }
 
   .traffic-lights {
-    gap: 7px;
-    margin-right: 10px;
+    gap: 5px;
+    margin-right: 6px;
   }
 
   .window-title {
@@ -221,18 +219,18 @@
 
 @media (max-width: 480px) {
   .window-titlebar {
-    height: 34px;
-    padding: 0 8px;
+    height: 28px;
+    padding: 0 6px;
   }
 
   .traffic-light {
-    width: 10px;
-    height: 10px;
+    width: 11px;
+    height: 11px;
   }
 
   .traffic-lights {
-    gap: 6px;
-    margin-right: 8px;
+    gap: 4px;
+    margin-right: 6px;
   }
 
   .window-title {
