@@ -123,7 +123,6 @@
     width: 40px;
     height: 40px;
     font-size: 28px;
-    border-radius: 10px;
   }
   
   .dock-item.magnified .dock-item-icon {
@@ -222,14 +221,12 @@
   .dock {
     padding: 3px 5px;
     bottom: 5px;
-    border-radius: 14px;
   }
   
   .dock-item-icon {
     width: 36px;
     height: 36px;
     font-size: 24px;
-    border-radius: 9px;
   }
   
   .dock-item.magnified .dock-item-icon {
@@ -356,7 +353,6 @@
   .dock {
     padding: 2px 4px;
     bottom: 4px;
-    border-radius: 12px;
     gap: 2px;
   }
   
@@ -364,7 +360,6 @@
     width: 32px;
     height: 32px;
     font-size: 22px;
-    border-radius: 8px;
   }
   
   .dock-item.magnified .dock-item-icon {
@@ -389,7 +384,7 @@
   }
   
   .window {
-    border-radius: 8px;
+    border: 3px solid #8b6f47;
   }
   
   .window-titlebar {
