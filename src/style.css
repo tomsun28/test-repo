@@ -1,3 +1,46 @@
+:root {
+  /* Retro Color Palette */
+  --retro-bg-primary: #f4e4c1;
+  --retro-bg-secondary: #e8d4a8;
+  --retro-bg-tertiary: #d4b896;
+  --retro-border-primary: #8b6f47;
+  --retro-border-secondary: #6b5437;
+  --retro-text-primary: #3d2817;
+  --retro-text-secondary: #5d4037;
+  --retro-text-muted: #8b7355;
+  --retro-accent-red: #a0522d;
+  --retro-accent-green: #6b8e23;
+  --retro-accent-yellow: #daa520;
+  --retro-accent-blue: #4682b4;
+  --retro-highlight: #ffd700;
+  --retro-shadow: rgba(61, 40, 23, 0.3);
+  
+  /* Typography */
+  --retro-font-family: 'Courier New', Courier, monospace;
+  --retro-font-size-base: 13px;
+  --retro-font-size-small: 11px;
+  --retro-font-size-large: 16px;
+  --retro-font-size-title: 14px;
+  --retro-line-height: 1.4;
+  
+  /* Spacing */
+  --retro-spacing-xs: 4px;
+  --retro-spacing-sm: 8px;
+  --retro-spacing-md: 12px;
+  --retro-spacing-lg: 16px;
+  --retro-spacing-xl: 24px;
+  
+  /* Borders */
+  --retro-border-width: 2px;
+  --retro-border-width-thick: 3px;
+  --retro-border-radius: 0px;
+  
+  /* Shadows - Hard shadows for CRT effect */
+  --retro-shadow-small: 2px 2px 0px var(--retro-shadow);
+  --retro-shadow-medium: 4px 4px 0px var(--retro-shadow);
+  --retro-shadow-large: 6px 6px 0px var(--retro-shadow);
+}
+
 * {
   margin: 0;
   padding: 0;
